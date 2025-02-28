@@ -1,0 +1,82 @@
+name: dotby1
+description: "A new Flutter project."
+
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  flutter_launcher_icons: ^0.14.3
+  google_fonts: ^6.2.1
+  water_drop_nav_bar: ^2.2.2
+  youtube_player_iframe: ^5.2.1
+  webview_flutter: ^4.10.0
+  webview_flutter_wkwebview: ^3.18.2
+  webview_flutter_android: ^4.3.2
+  url_launcher: ^6.3.1
+  custom_sliding_segmented_control: ^1.8.5
+  search_app_bar_page: ^2.5.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/logo.png
+    - assets/images/logo2.png
+    - assets/images/Ellipse.png
+    - assets/images/Gold1.png
+    - assets/images/Gold2.png
+    - assets/images/GOLD11.png
+    - assets/images/silver.png
+    - assets/images/silver2.png
+    - assets/images/bronze.png
+    - assets/images/bronze2.png
+    - assets/images/brush.png
+    - assets/images/brush1.jpg
+    - assets/images/brush3.png
+    - assets/images/brush4.jpg
+    - assets/images/brush5.png
+    - assets/images/brush6.jpg
+    - assets/images/content.png
+    - assets/images/event.jpg
+    - assets/images/brush7.png
+    - assets/images/brush8.png
+    - assets/images/darts.png
+    - assets/images/vision.png
+    - assets/images/undercon.png
+    - assets/images/person.png
+  #   - images/a_dot_ham.jpeg
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo.png"
+  
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/to/font-from-package
