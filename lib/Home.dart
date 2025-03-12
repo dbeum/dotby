@@ -1,13 +1,20 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
-import 'package:dotby1/About.dart';
-import 'package:dotby1/Login.dart';
-import 'package:dotby1/Register.dart';
-import 'package:dotby1/Search.dart';
+import 'package:dotby1/about.dart';
+import 'package:dotby1/info.dart';
+import 'package:dotby1/login.dart';
+import 'package:dotby1/primelenses.dart';
+import 'package:dotby1/register.dart';
+import 'package:dotby1/search.dart';
 
-import 'package:dotby1/Talk.dart';
+import 'package:dotby1/talk.dart';
+import 'package:dotby1/zoomlenses.dart';
+import 'package:dotby1/lenses.dart';
 import 'package:dotby1/youtubeplayer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:water_drop_nav_bar/water_drop_nav_bar.dart';
 
@@ -19,7 +26,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-   final Color navigationBarColor = Color.fromARGB(255, 40, 42, 47);
+
+   final Color navigationBarColor = const Color.fromARGB(255, 40, 42, 47);
   int selectedIndex = 0;
   late PageController pageController;
   int _selectedIndex = 0;
@@ -57,7 +65,7 @@ final Uri stockUrl = Uri.parse('https://mediacreatorsplace.com/');
  
   Future<void> _launchstock() async {
     // Use launchUrl for web compatibility
-    if (!await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication)) {
+    if (!await launchUrl(stockUrl, mode: LaunchMode.externalApplication)) {
       throw 'Could not launch $stockUrl';
     }
   }
@@ -78,12 +86,81 @@ final Uri stockUrl = Uri.parse('https://mediacreatorsplace.com/');
     }
   }
 
+  
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<List<Map<String, dynamic>>> fetchPhotos() async {
+    // Fetch all movie documents
+    QuerySnapshot snapshot = await _firestore.collection('photos').get();
+
+    // Convert documents to a list of maps, including the document ID (movie name)
+    return snapshot.docs.map((doc) {
+      return {
+        'id': doc.id,  // The movie name (Alien, for example)
+        ...doc.data() as Map<String, dynamic> // The rest of the movie details
+      };
+    }).toList();
+  }
+
+  Future<List<Map<String, dynamic>>> fetchLenses() async {
+    // Fetch all movie documents
+    QuerySnapshot snapshot = await _firestore.collection('lenses').get();
+
+    // Convert documents to a list of maps, including the document ID (movie name)
+    return snapshot.docs.map((doc) {
+      return {
+        'id': doc.id,  // The movie name (Alien, for example)
+        ...doc.data() as Map<String, dynamic> // The rest of the movie details
+      };
+    }).toList();
+  }
+
+    Future<List<Map<String, dynamic>>> fetchLights() async {
+    // Fetch all movie documents
+    QuerySnapshot snapshot = await _firestore.collection('Lights').get();
+
+    // Convert documents to a list of maps, including the document ID (movie name)
+    return snapshot.docs.map((doc) {
+      return {
+        'id': doc.id,  // The movie name (Alien, for example)
+        ...doc.data() as Map<String, dynamic> // The rest of the movie details
+      };
+    }).toList();
+  }
+
+     Future<List<Map<String, dynamic>>> fetchAccessories() async {
+    // Fetch all movie documents
+    QuerySnapshot snapshot = await _firestore.collection('Accessories').get();
+
+    // Convert documents to a list of maps, including the document ID (movie name)
+    return snapshot.docs.map((doc) {
+      return {
+        'id': doc.id,  // The movie name (Alien, for example)
+        ...doc.data() as Map<String, dynamic> // The rest of the movie details
+      };
+    }).toList();
+  }
+
+
+   Future<List<Map<String, dynamic>>> fetchEvent() async {
+    // Fetch all movie documents
+    QuerySnapshot snapshot = await _firestore.collection('Event').get();
+
+    // Convert documents to a list of maps, including the document ID (movie name)
+    return snapshot.docs.map((doc) {
+      return {
+        'id': doc.id,  // The movie name (Alien, for example)
+        ...doc.data() as Map<String, dynamic> // The rest of the movie details
+      };
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
  
    return Scaffold(
     appBar:  AppBar(
-        backgroundColor: Color.fromARGB(255, 31, 33, 37),
+        backgroundColor:const Color.fromARGB(255, 31, 33, 37),
         elevation: 0,
          title:
         _isSearching
@@ -100,7 +177,7 @@ final Uri stockUrl = Uri.parse('https://mediacreatorsplace.com/');
       : 
           Stack(children: [
           
-          Image.asset('assets/images/logo.png', height: 65)
+          Image.asset('assets/images/logo1.png', height: 65)
          ],), 
         actions: [ 
             IconButton(
@@ -121,7 +198,7 @@ final Uri stockUrl = Uri.parse('https://mediacreatorsplace.com/');
     ),
             TextButton(onPressed: () {
               
-            }, child: Icon(Icons.shopping_bag_outlined,size: 30,color: Colors.white,)
+            }, child:const Icon(Icons.shopping_bag_outlined,size: 30,color: Colors.white,)
             //Image.asset('assets/images/search.png')
             
         )],
@@ -140,15 +217,16 @@ final Uri stockUrl = Uri.parse('https://mediacreatorsplace.com/');
             //HOME PAGE
 
 
-           Container(
-            child:   SingleChildScrollView(child:
+         Container(
+            child:   SingleChildScrollView(
+              child:
       Column(children: [
      
      Container(
       margin: EdgeInsets.all(20),
       height:190 ,width: 350,
      
-      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(18)),
+      decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(18)),
        gradient: LinearGradient(
       colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
       begin: Alignment.topLeft, // Start point
@@ -159,10 +237,10 @@ final Uri stockUrl = Uri.parse('https://mediacreatorsplace.com/');
       children: [
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text('GOLD PRO',style: GoogleFonts.aDLaMDisplay(fontSize:30,color: Colors.white),),
+          children: [Text('DOTBY',style: GoogleFonts.aDLaMDisplay(fontSize:30,color: Colors.white),),
       SizedBox(height: 5,),
       Container(height: 35,
-      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
+      decoration:const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
         gradient: LinearGradient(
       colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
       begin: Alignment.topLeft, // Start point
@@ -181,10 +259,10 @@ final Uri stockUrl = Uri.parse('https://mediacreatorsplace.com/');
     ),
     elevation: 5, // Add shadow effect
   ),
-       child: Text('Explore now',style: TextStyle(color: Colors.white),)),
+       child: const Text('Explore now',style: TextStyle(color: Colors.white),)),
       )
       ],),
-    Image.asset('assets/images/Gold1.png',height: 150,)
+    Image.asset('assets/images/banner.png',height: 150)
     ],
     ) ,
      ),
@@ -198,84 +276,42 @@ final Uri stockUrl = Uri.parse('https://mediacreatorsplace.com/');
    
      ],),
       SizedBox(height: 20,),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
+       FutureBuilder<List<Map<String, dynamic>>>(
+            future: fetchEvent(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error fetching data'));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Center(child: Text('No data found'));
+              }
 
-    Container(height: 200,
-    width: 150,
-      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
-        gradient: LinearGradient(
-      colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
-      begin: Alignment.topLeft, // Start point
-      end: Alignment.bottomRight, // End point
-    ),
-      ),
-      child: ElevatedButton(onPressed: () {
-        
-      },
-       style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.transparent, // Change button color
-    foregroundColor: Colors.white, // Change text/icon color
-  //  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Adjust padding
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(30), // Round edges
-    ),
-    elevation: 5, // Add shadow effect
-  ),
-       child:Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Image.asset('assets/images/GOLD11.png'),
-           Text('#1,000,000',style: GoogleFonts.aDLaMDisplay(fontSize:15,fontWeight:FontWeight.bold, color: Colors.white),),
-       ],),
-      )),
-      Container(height: 200,
-    width: 150,
-      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
-        gradient: LinearGradient(
-      colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
-      begin: Alignment.topLeft, // Start point
-      end: Alignment.bottomRight, // End point
-    ),
-      ),
-      child: ElevatedButton(onPressed: () {
-        
-      },
-       style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.transparent, // Change button color
-    foregroundColor: Colors.white, // Change text/icon color
-  //  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Adjust padding
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(30), // Round edges
-    ),
-    elevation: 5, // Add shadow effect
-  ),
-       child:Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Image.asset('assets/images/silver.png'),
-           Text('#500,000',style: GoogleFonts.aDLaMDisplay(fontSize:15,fontWeight:FontWeight.bold, color: Colors.white),),
-       ],),
-      ))
-      ],),
-      SizedBox(height: 30,),
-      Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
+              List<Map<String, dynamic>> Event = snapshot.data!;
 
-    Container(height: 200,
+              return 
+           Padding(
+         padding: const EdgeInsets.symmetric(horizontal: 10),
+        
+             child: Wrap(
+                 spacing: 30,
+                 runSpacing: 20,
+                 alignment: WrapAlignment.center,
+                             children: Event.map((Event){
+                 
+                    // Fetch 'poster_url' from the nested document data
+                    String? posterUrl = Event['poster_url'] ; // Adjust field name to match your database
+String formattedPrice = NumberFormat('#,##0').format(Event['price'] ?? 0);
+                 return  Container(height: 200,
     width: 150,
-      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
+      decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
         gradient: LinearGradient(
       colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
       begin: Alignment.topLeft, // Start point
       end: Alignment.bottomRight, // End point
     ),
       ),
-      child: ElevatedButton(onPressed: () {
-        
-      },
+      child: ElevatedButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>Info(infoDetails:Event))),
        style: ElevatedButton.styleFrom(
     backgroundColor: Colors.transparent, // Change button color
     foregroundColor: Colors.white, // Change text/icon color
@@ -288,149 +324,316 @@ final Uri stockUrl = Uri.parse('https://mediacreatorsplace.com/');
        child:Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Image.asset('assets/images/silver2.png'),
-           Text('#350,000',style: GoogleFonts.aDLaMDisplay(fontSize:15,fontWeight:FontWeight.bold, color: Colors.white),),
-       ],),
-      )),
-      Container(height: 200,
-    width: 150,
-      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
-        gradient: LinearGradient(
-      colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
-      begin: Alignment.topLeft, // Start point
-      end: Alignment.bottomRight, // End point
-    ),
-      ),
-      child: ElevatedButton(onPressed: () {
+posterUrl != null
+    ? CachedNetworkImage(
+        imageUrl: posterUrl,
         
-      },
-       style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.transparent, // Change button color
-    foregroundColor: Colors.white, // Change text/icon color
-  //  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Adjust padding
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(30), // Round edges
-    ),
-    elevation: 5, // Add shadow effect
-  ),
-       child:Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Image.asset('assets/images/bronze.png'),
-           Text('#150,000',style: GoogleFonts.aDLaMDisplay(fontSize:15,fontWeight:FontWeight.bold, color: Colors.white),),
-       ],),
-      ))
-      ],),
-        SizedBox(height: 20,),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
+      )
+    : Image.asset(
+        'assets/images/logo.png',  // Use a local placeholder image
+      ),
 
-    Container(height: 200,
-    width: 150,
-      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
-        gradient: LinearGradient(
-      colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
-      begin: Alignment.topLeft, // Start point
-      end: Alignment.bottomRight, // End point
-    ),
-      ),
-      child: ElevatedButton(onPressed: () {
         
-      },
-       style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.transparent, // Change button color
-    foregroundColor: Colors.white, // Change text/icon color
-  //  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Adjust padding
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(30), // Round edges
-    ),
-    elevation: 5, // Add shadow effect
-  ),
-       child:Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Image.asset('assets/images/GOLD11.png'),
-           Text('#1,000,000',style: GoogleFonts.aDLaMDisplay(fontSize:15,fontWeight:FontWeight.bold, color: Colors.white),),
+            Text('₦$formattedPrice',style: GoogleFonts.aDLaMDisplay(fontSize:15,fontWeight:FontWeight.bold, color: Colors.white),),
        ],),
-      )),
-      Container(height: 200,
-    width: 150,
-      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
-        gradient: LinearGradient(
-      colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
-      begin: Alignment.topLeft, // Start point
-      end: Alignment.bottomRight, // End point
-    ),
-      ),
-      child: ElevatedButton(onPressed: () {
-        
-      },
-       style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.transparent, // Change button color
-    foregroundColor: Colors.white, // Change text/icon color
-  //  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Adjust padding
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(30), // Round edges
-    ),
-    elevation: 5, // Add shadow effect
-  ),
-       child:Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Image.asset('assets/images/silver.png'),
-           Text('#500,000',style: GoogleFonts.aDLaMDisplay(fontSize:15,fontWeight:FontWeight.bold, color: Colors.white),),
-       ],),
-      ))
-      ],),
-      SizedBox(height: 30,),
-      Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-
-    Container(height: 200,
-    width: 150,
-      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
-        gradient: LinearGradient(
-      colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
-      begin: Alignment.topLeft, // Start point
-      end: Alignment.bottomRight, // End point
-    ),
-      ),
-      child: ElevatedButton(onPressed: () {
-        
-      },
-       style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.transparent, // Change button color
-    foregroundColor: Colors.white, // Change text/icon color
-  //  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Adjust padding
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(30), // Round edges
-    ),
-    elevation: 5, // Add shadow effect
-  ),
-       child:Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Image.asset('assets/images/bronze2.png'),
-           Text('#100,000',style: GoogleFonts.aDLaMDisplay(fontSize:15,fontWeight:FontWeight.bold, color: Colors.white),),
-       ],),
-      )),
-      Container(height: 200,
-    width: 150,
+      ));
+                     }).toList()
+                 ));
+                  },
+                      ),
+       
      
-  )
-      ],),
-      SizedBox(height: 20,),
+      
+      SizedBox(height: 25,),
+      Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+       
+      Text('Photo & Video Equipment Rentals',style: GoogleFonts.inter(fontSize:20,fontWeight:FontWeight.bold, color: Colors.white),),
+      
+     
+   
+     ],),
+      SizedBox(height: 5,),
       Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         SizedBox(width: 15,),
-      Text('Photo & Video Equipment',style: GoogleFonts.inter(fontSize:20,fontWeight:FontWeight.bold, color: Colors.white),),
+      Text('Cameras',style: GoogleFonts.inter(fontSize:20,fontWeight:FontWeight.bold, color: Colors.white),),
+      
      
    
      ],),
      SizedBox(height: 20,),
+               FutureBuilder<List<Map<String, dynamic>>>(
+            future: fetchPhotos(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error fetching data'));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Center(child: Text('No data found'));
+              }
+
+              List<Map<String, dynamic>> photos = snapshot.data!;
+
+              return 
+           Padding(
+         padding: const EdgeInsets.symmetric(horizontal: 10),
+        
+             child: Wrap(
+                 spacing: 30,
+                 runSpacing: 20,
+                 alignment: WrapAlignment.center,
+                             children: photos.map((photos){
+                 
+                    // Fetch 'poster_url' from the nested document data
+                    String? posterUrl = photos['poster_url'] ; // Adjust field name to match your database
+String formattedPrice = NumberFormat('#,##0').format(photos['price'] ?? 0);
+                 return  Container(height: 200,
+    width: 150,
+      decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
+        gradient: LinearGradient(
+      colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
+      begin: Alignment.topLeft, // Start point
+      end: Alignment.bottomRight, // End point
+    ),
+      ),
+      child: ElevatedButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>Info(infoDetails: photos))),
+       style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.transparent, // Change button color
+    foregroundColor: Colors.white, // Change text/icon color
+  //  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Adjust padding
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(30), // Round edges
+    ),
+    elevation: 5, // Add shadow effect
+  ),
+       child:Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          posterUrl != null
+                            ? Image.network(
+                                posterUrl,
+                              
+                              )
+                            : Image.asset(
+                                'assets/images/logo.png',  // Use a local placeholder image
+                               
+                              ),
+           Text(photos['name']??'',style: GoogleFonts.aDLaMDisplay(fontSize:15,fontWeight:FontWeight.bold, color: Colors.white),
+         maxLines:1,
+         overflow: TextOverflow.ellipsis,
+        ),
+        
+            Text('₦$formattedPrice',style: GoogleFonts.aDLaMDisplay(fontSize:15,fontWeight:FontWeight.bold, color: Colors.white),),
+       ],),
+      ));
+                     }).toList()
+                 ));
+                  },
+                      ),
+                      SizedBox(height: 10,),
+      Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        SizedBox(width: 15,),
+      Text('Lenses',style: GoogleFonts.inter(fontSize:20,fontWeight:FontWeight.bold, color: Colors.white),),
+      
+     
+   
+     ],),
+     SizedBox(height: 20,),
+            CustomSlidingSegmentedControl<int>(
+            initialValue: _selectedIndex,
+            children: {
+              0: Text("All",style: GoogleFonts.mulish(fontSize:15,color: Colors.white)),
+              1: Text("Prime",style: GoogleFonts.mulish(fontSize:15,color: Colors.white)),
+              2: Text("Zoom",style: GoogleFonts.mulish(fontSize:15,color: Colors.white))
+            },
+            
+            decoration: BoxDecoration(
+              color: Color.fromARGB(155,114, 117, 129),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            thumbDecoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            onValueChanged: (int index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
+          ),
+          const SizedBox(height: 20),
+
+          // Display different content based on selected index
+          _selectedIndex == 0 ? Lenses() : _selectedIndex == 1 ? Primelenses() : Zoomlenses(),
+
+           SizedBox(height: 10,),
+      Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        SizedBox(width: 15,),
+      Text('Lights',style: GoogleFonts.inter(fontSize:20,fontWeight:FontWeight.bold, color: Colors.white),),
+      
+     
+   
+     ],),
+     SizedBox(height: 20,),
+               FutureBuilder<List<Map<String, dynamic>>>(
+            future: fetchLights(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error fetching data'));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Center(child: Text('No data found'));
+              }
+
+              List<Map<String, dynamic>> lights = snapshot.data!;
+
+              return 
+           Padding(
+         padding: const EdgeInsets.symmetric(horizontal: 10),
+        
+             child: Wrap(
+                 spacing: 30,
+                 runSpacing: 20,
+                 alignment: WrapAlignment.center,
+                             children: lights.map((lights){
+                 
+                    // Fetch 'poster_url' from the nested document data
+                    String? posterUrl = lights['poster_url'] ; // Adjust field name to match your database
+String formattedPrice = NumberFormat('#,##0').format(lights['price'] ?? 0);
+                 return  Container(height: 200,
+    width: 150,
+      decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
+        gradient: LinearGradient(
+      colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
+      begin: Alignment.topLeft, // Start point
+      end: Alignment.bottomRight, // End point
+    ),
+      ),
+      child: ElevatedButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>Info(infoDetails:lights))),
+       style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.transparent, // Change button color
+    foregroundColor: Colors.white, // Change text/icon color
+  //  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Adjust padding
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(30), // Round edges
+    ),
+    elevation: 5, // Add shadow effect
+  ),
+       child:Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          posterUrl != null
+                            ? Image.network(
+                                posterUrl,
+                              
+                              )
+                            : Image.asset(
+                                'assets/images/logo.png', 
+                               
+                              ),
+           Text(lights['name']??'',style: GoogleFonts.aDLaMDisplay(fontSize:15,fontWeight:FontWeight.bold, color: Colors.white),
+         maxLines:1,
+         overflow: TextOverflow.ellipsis,
+        ),
+        
+            Text('₦$formattedPrice',style: GoogleFonts.aDLaMDisplay(fontSize:15,fontWeight:FontWeight.bold, color: Colors.white),),
+       ],),
+      ));
+                     }).toList()
+                 ));
+                  },
+                      ),
+                            SizedBox(height: 10,),
+      Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        SizedBox(width: 15,),
+      Text('Accessories',style: GoogleFonts.inter(fontSize:20,fontWeight:FontWeight.bold, color: Colors.white),),
+      
+     
+   
+     ],),
+     SizedBox(height: 20,),
+               FutureBuilder<List<Map<String, dynamic>>>(
+            future: fetchAccessories(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error fetching data'));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Center(child: Text('No data found'));
+              }
+
+              List<Map<String, dynamic>> accessories = snapshot.data!;
+
+              return 
+           Padding(
+         padding: const EdgeInsets.symmetric(horizontal: 10),
+        
+             child: Wrap(
+                 spacing: 30,
+                 runSpacing: 20,
+                 alignment: WrapAlignment.center,
+                             children: accessories.map((accessories){
+                 
+                    // Fetch 'poster_url' from the nested document data
+                    String? posterUrl = accessories['poster_url'] ; // Adjust field name to match your database
+String formattedPrice = NumberFormat('#,##0').format(accessories['price'] ?? 0);
+                 return  Container(height: 200,
+    width: 150,
+      decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
+        gradient: LinearGradient(
+      colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
+      begin: Alignment.topLeft, // Start point
+      end: Alignment.bottomRight, // End point
+    ),
+      ),
+      child: ElevatedButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>Info(infoDetails:accessories))),
+       style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.transparent, // Change button color
+    foregroundColor: Colors.white, // Change text/icon color
+  //  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Adjust padding
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(30), // Round edges
+    ),
+    elevation: 5, // Add shadow effect
+  ),
+       child:Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          posterUrl != null
+                            ? Image.network(
+                                posterUrl,
+                              
+                              )
+                            : Image.asset(
+                                'assets/images/logo.png', 
+                               
+                              ),
+           Text(accessories['name']??'',style: GoogleFonts.aDLaMDisplay(fontSize:15,fontWeight:FontWeight.bold, color: Colors.white),
+         maxLines:1,
+         overflow: TextOverflow.ellipsis,
+        ),
+        
+            Text('₦$formattedPrice',style: GoogleFonts.aDLaMDisplay(fontSize:15,fontWeight:FontWeight.bold, color: Colors.white),),
+       ],),
+      ));
+                     }).toList()
+                 ));
+                  },
+                      ),
+                      SizedBox(height: 10,)
+                      
         ],) ,)
             ),
             
@@ -446,7 +649,7 @@ final Uri stockUrl = Uri.parse('https://mediacreatorsplace.com/');
         SizedBox(height: 150,),
          Container(height: 40,
           width: 250,
-      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
+      decoration:const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
         gradient: LinearGradient(
       colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
       begin: Alignment.topLeft, // Start point
@@ -468,7 +671,7 @@ final Uri stockUrl = Uri.parse('https://mediacreatorsplace.com/');
       SizedBox(height: 20,),
          Container(height: 40,
          width: 250,
-      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
+      decoration:const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
         gradient: LinearGradient(
       colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
       begin: Alignment.topLeft, // Start point
@@ -488,9 +691,106 @@ final Uri stockUrl = Uri.parse('https://mediacreatorsplace.com/');
        child: Text('BECOME A VENDOR',style: GoogleFonts.aDLaMDisplay(fontSize:20,color: Colors.white),)),
       ),
        SizedBox(height: 20,),
+           Container(height: 40,
+          width: 250,
+      decoration:const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
+        gradient: LinearGradient(
+      colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
+      begin: Alignment.topLeft, // Start point
+      end: Alignment.bottomRight, // End point
+    ),
+      ),
+      child: ElevatedButton(onPressed: () {
+        
+      },
+       style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.transparent, // Change button color
+    foregroundColor: Colors.white, // Change text/icon color
+  //  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Adjust padding
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(30), // Round edges
+    ),
+    elevation: 5, // Add shadow effect
+  ),
+       child: Text('EVENTS',style: GoogleFonts.aDLaMDisplay(fontSize:20,color: Colors.white),)),
+      ),
+      SizedBox(height: 20,),
+          Container(height: 40,
+          width: 250,
+      decoration:const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
+        gradient: LinearGradient(
+      colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
+      begin: Alignment.topLeft, // Start point
+      end: Alignment.bottomRight, // End point
+    ),
+      ),
+      child: ElevatedButton(onPressed:() {
+        
+      },
+       style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.transparent, // Change button color
+    foregroundColor: Colors.white, // Change text/icon color
+  //  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Adjust padding
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(30), // Round edges
+    ),
+    elevation: 5, // Add shadow effect
+  ),
+       child: Text('PHOTOGRAPHY',style: GoogleFonts.aDLaMDisplay(fontSize:20,color: Colors.white),)),
+      ),
+      SizedBox(height: 20,),
+          Container(height: 40,
+          width: 250,
+      decoration:const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
+        gradient: LinearGradient(
+      colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
+      begin: Alignment.topLeft, // Start point
+      end: Alignment.bottomRight, // End point
+    ),
+      ),
+      child: ElevatedButton(onPressed:() {
+        
+      },
+       style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.transparent, // Change button color
+    foregroundColor: Colors.white, // Change text/icon color
+  //  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Adjust padding
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(30), // Round edges
+    ),
+    elevation: 5, // Add shadow effect
+  ),
+       child: Text('MUSIC VIDEOS',style: GoogleFonts.aDLaMDisplay(fontSize:20,color: Colors.white),)),
+      ),
+      SizedBox(height: 20,),
+          Container(height: 40,
+          width: 250,
+      decoration:const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
+        gradient: LinearGradient(
+      colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
+      begin: Alignment.topLeft, // Start point
+      end: Alignment.bottomRight, // End point
+    ),
+      ),
+      child: ElevatedButton(onPressed:() {
+        
+      },
+       style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.transparent, // Change button color
+    foregroundColor: Colors.white, // Change text/icon color
+  //  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Adjust padding
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(30), // Round edges
+    ),
+    elevation: 5, // Add shadow effect
+  ),
+       child: Text('FILM&DOCUMENTARY',style: GoogleFonts.aDLaMDisplay(fontSize:18,color: Colors.white),)),
+      ),
+      SizedBox(height: 20,),
+      
          Container(height: 40,
          width: 250,
-      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
+      decoration:const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
         gradient: LinearGradient(
       colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
       begin: Alignment.topLeft, // Start point
@@ -552,11 +852,11 @@ final Uri stockUrl = Uri.parse('https://mediacreatorsplace.com/');
             child:   SingleChildScrollView(child:
       Column(children: [
      SizedBox(height: 50,),
-     Container(
+      Container(
       margin: EdgeInsets.all(20),
       height:190 ,width: 350,
      
-      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(18)),
+      decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(18)),
        gradient: LinearGradient(
       colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
       begin: Alignment.topLeft, // Start point
@@ -567,10 +867,10 @@ final Uri stockUrl = Uri.parse('https://mediacreatorsplace.com/');
       children: [
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text('GOLD PRO',style: GoogleFonts.aDLaMDisplay(fontSize:30,color: Colors.white),),
+          children: [Text('DOTBY',style: GoogleFonts.aDLaMDisplay(fontSize:30,color: Colors.white),),
       SizedBox(height: 5,),
       Container(height: 35,
-      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
+      decoration:const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
         gradient: LinearGradient(
       colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
       begin: Alignment.topLeft, // Start point
@@ -589,10 +889,10 @@ final Uri stockUrl = Uri.parse('https://mediacreatorsplace.com/');
     ),
     elevation: 5, // Add shadow effect
   ),
-       child: Text('Explore now',style: TextStyle(color: Colors.white),)),
+       child: const Text('Explore now',style: TextStyle(color: Colors.white),)),
       )
       ],),
-    Image.asset('assets/images/Gold1.png',height: 150,)
+    Image.asset('assets/images/banner.png',height: 150)
     ],
     ) ,
      ),
@@ -639,7 +939,7 @@ Text('We pride ourselves on the excellent services we give to our customers whic
              softWrap: true,),
  SizedBox(height: 10,),
              Center(child:   Container(height: 35,
-      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
+      decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
         gradient: LinearGradient(
       colors: [Colors.red, Color.fromARGB(255,29, 31, 35)], // Gradient colors
       begin: Alignment.topLeft, // Start point
@@ -665,12 +965,12 @@ Text('We pride ourselves on the excellent services we give to our customers whic
              Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            YouTubePlayerWidget(videoId: '7a8WMmFnP7s'), 
+      const      YouTubePlayerWidget(videoId: '7a8WMmFnP7s'), 
             SizedBox(height: 20),
-            YouTubePlayerWidget(videoId: 'knLGO_7_y8Q'), 
+       const     YouTubePlayerWidget(videoId: 'knLGO_7_y8Q'), 
              SizedBox(height: 20),
               Center(child:   Container(height: 35,
-      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
+      decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
         gradient: LinearGradient(
       colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
       begin: Alignment.topLeft, // Start point
@@ -942,3 +1242,15 @@ SizedBox(height: 20),
       );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+

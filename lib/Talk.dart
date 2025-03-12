@@ -22,19 +22,19 @@ class _TalkState extends State<Talk> {
          
           children: [
             SizedBox(height: 50,),
-            YouTubePlayerWidget(videoId: '7a8WMmFnP7s'), 
+     const       YouTubePlayerWidget(videoId: '7a8WMmFnP7s'), 
             SizedBox(height: 20),
-            YouTubePlayerWidget(videoId: 'knLGO_7_y8Q'), 
+       const     YouTubePlayerWidget(videoId: 'knLGO_7_y8Q'), 
              SizedBox(height: 20),
            
       SizedBox(height: 20),
-            YouTubePlayerWidget(videoId: 'SQBwBHiczMM'), 
+  const          YouTubePlayerWidget(videoId: 'SQBwBHiczMM'), 
              SizedBox(height: 20),
-            YouTubePlayerWidget(videoId: 'UfIDIBMpO6Q'), 
+     const       YouTubePlayerWidget(videoId: 'UfIDIBMpO6Q'), 
              SizedBox(height: 20),
-            YouTubePlayerWidget(videoId: 'sdGLmsWTWPE'), 
+    const        YouTubePlayerWidget(videoId: 'sdGLmsWTWPE'), 
              SizedBox(height: 20),
-            YouTubePlayerWidget(videoId: 'bUplF7Gemj4'), 
+      const      YouTubePlayerWidget(videoId: 'bUplF7Gemj4'), 
              SizedBox(height: 20),
           
       ],),)
