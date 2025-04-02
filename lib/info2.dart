@@ -1,20 +1,18 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Info extends StatefulWidget {
+class Info2 extends StatefulWidget {
    final Map<String, dynamic> infoDetails;
 
-    const Info({super.key, required this.infoDetails});
+    const Info2({super.key, required this.infoDetails});
 
   @override
-  State<Info> createState() => _InfoState();
+  State<Info2> createState() => _Info2State();
 }
 
-class _InfoState extends State<Info> {
+class _Info2State extends State<Info2> {
    int _orderQuantity = 1; // Initial quantity
 late int price;
   late int basePrice;
@@ -63,31 +61,7 @@ late int price;
 
 final formattedPrice = '₦${NumberFormat('#,###').format(price ?? 0)}';
 
-void addToCart(String productId, String title, int price, String imageUrl, int quantity) async {
-  final user = FirebaseAuth.instance.currentUser;
-  if (user == null) return;
 
-  final cartRef = FirebaseFirestore.instance.collection('carts').doc(user.uid).collection('items').doc(productId);
-
-  final cartItem = await cartRef.get();
-
-  if (cartItem.exists) {
-    // If product exists, increase quantity
-    cartRef.update({
-      'quantity': FieldValue.increment(quantity),
-      'totalPrice': FieldValue.increment(basePrice * quantity),
-    });
-  } else {
-    // Add new product to cart
-    cartRef.set({
-      'title': title,
-      'price': price,
-      'image': imageUrl,
-      'quantity': quantity,
-      'totalPrice': basePrice * quantity,
-    });
-  }
-}
     return  Scaffold(
       backgroundColor: Color.fromARGB(255,	19, 20, 22),
       appBar: AppBar(elevation: 0,backgroundColor: Colors.transparent,),
@@ -211,10 +185,10 @@ Row(
                 softWrap: true,),
                 SizedBox(height: 20,),
                  Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(height: 50,
-    width: 70,
+    width: 100,
       decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(18)),
         gradient: LinearGradient(
       colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
@@ -235,34 +209,7 @@ Row(
        child:Image.asset('assets/images/whatsapp.png')
       )),
       
-          Container(height: 50,
-    width: 250,
-      decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(18)),
-        gradient: LinearGradient(
-      colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
-      begin: Alignment.topLeft, // Start point
-      end: Alignment.bottomRight, // End point
-    ),
-      ),
-      child: ElevatedButton(onPressed: (){ addToCart( widget.infoDetails['id'], // Ensure this field exists in your Firestore data
-    widget.infoDetails['name'], 
-    widget.infoDetails['price'], 
-    widget.infoDetails['poster_url'],
-       _orderQuantity,);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Added to bag')));
-       },
-       style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.transparent, // Change button color
-    foregroundColor: Colors.white, // Change text/icon color
-  //  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Adjust padding
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(18), // Round edges
-    ),
-    elevation: 5, // Add shadow effect
-  ),
-       child:Text('Add to bag')
-      ))
+       
         ],)
               ],
             ),)

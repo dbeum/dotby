@@ -37,6 +37,9 @@ dependencies:
   hive_flutter: ^1.1.0
   path_provider: ^2.1.5
   cached_network_image: ^3.4.1
+  flutter_dotenv: ^5.2.1
+  clay_containers: ^0.3.4
+  carousel_slider: ^5.0.0
 
 
 
@@ -53,8 +56,11 @@ flutter:
 
   assets:
     - assets/images/logo.png
+    - assets/images/logos.png
+    - assets/images/profile.png
     - assets/images/logo1.png
     - assets/images/logo2.jpg
+    - assets/images/gh4.png 
     - assets/images/Ellipse.png
     - assets/images/Gold1.png
     - assets/images/Gold2.png
@@ -79,6 +85,9 @@ flutter:
     - assets/images/person.png
     - assets/images/whatsapp.png
     - assets/images/banner.png
+    - assets/images/google.png
+    - assets/images/nikon.png
+    - assets/images/logo12.png
   #   - images/a_dot_ham.jpeg
 
 flutter_icons:
@@ -92,7 +101,7 @@ flutter_native_splash:
 
   android_12:
     color: "1F2125"
-    image: assets/images/logos.png
+    image: assets/images/logo12.png
 
 
 

@@ -91,7 +91,7 @@ String formattedPrice = NumberFormat('#,##0').format(Primelenses['price'] ?? 0);
          overflow: TextOverflow.ellipsis,
         ),
         
-            Text('₦$formattedPrice',style: GoogleFonts.aDLaMDisplay(fontSize:15,fontWeight:FontWeight.bold, color: Colors.white),),
+            Text('₦$formattedPrice',style: GoogleFonts.mulish(fontSize:15,fontWeight:FontWeight.bold, color: Colors.white),),
        ],),
       ));
                      }).toList()

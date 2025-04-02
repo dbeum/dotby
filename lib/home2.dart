@@ -3,11 +3,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 import 'package:dotby1/about.dart';
-import 'package:dotby1/cart.dart';
-import 'package:dotby1/confirm.dart';
-import 'package:dotby1/info.dart';
+import 'package:dotby1/authcheck.dart';
+
+import 'package:dotby1/info2.dart';
 import 'package:dotby1/login.dart';
-import 'package:dotby1/orders.dart';
 import 'package:dotby1/primelenses.dart';
 import 'package:dotby1/register.dart';
 import 'package:dotby1/search.dart';
@@ -23,14 +22,14 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:water_drop_nav_bar/water_drop_nav_bar.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class Home2 extends StatefulWidget {
+  const Home2({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<Home2> createState() => _Home2State();
 }
 
-class _HomeState extends State<Home> {
+class _Home2State extends State<Home2> {
 
    final Color navigationBarColor = const Color.fromARGB(255, 40, 42, 47);
   int selectedIndex = 0;
@@ -95,7 +94,7 @@ final Uri stockUrl = Uri.parse('https://mediacreatorsplace.com/');
     }
   }
 
-  final Uri mapUrl = Uri.parse('https://maps.app.goo.gl/gishirBWSggdz4Ks9');
+    final Uri mapUrl = Uri.parse('https://maps.app.goo.gl/gishirBWSggdz4Ks9');
 
  
   Future<void> _launchmap() async {
@@ -104,6 +103,7 @@ final Uri stockUrl = Uri.parse('https://mediacreatorsplace.com/');
       throw 'Could not launch $mapUrl';
     }
   }
+
    final String email = 'info@dotbyproductions.com';
 
  
@@ -190,15 +190,7 @@ final Uri stockUrl = Uri.parse('https://mediacreatorsplace.com/');
     }).toList();
   }
 
-   final FirebaseAuth auth = FirebaseAuth.instance;
-void signOut(BuildContext context) async {
-  await FirebaseAuth.instance.signOut();
-  Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(builder: (context) => Login()), // Navigate to login screen after sign out
-  );
-}
-
+  
 void fetchAllData() async {
   List<Map<String, dynamic>> photos = await fetchPhotos();
   List<Map<String, dynamic>> lenses = await fetchLenses();
@@ -213,8 +205,7 @@ void fetchAllData() async {
 }
   @override
   Widget build(BuildContext context) {
-     User? user = auth.currentUser;
-  String? email = user?.email;
+ 
    return Scaffold(
     appBar:  AppBar(
         backgroundColor:const Color.fromARGB(255, 31, 33, 37),
@@ -253,9 +244,7 @@ void fetchAllData() async {
         });
       },
     ),
-            TextButton(onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>Cart()));
-            }, child:const Icon(Icons.shopping_bag_outlined,size: 30,color: Colors.white,)
+            TextButton(onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>AuthCheck())), child:const Icon(Icons.login,size: 30,color: Colors.white,)
             //Image.asset('assets/images/search.png')
             
         )],
@@ -289,7 +278,7 @@ void fetchAllData() async {
               child:
       Column(children: [
      
-Align(
+  Align(
           alignment: Alignment.topCenter,
         
              child: CarouselSlider(
@@ -320,9 +309,9 @@ Align(
       children: [
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text('Your Media,Our Equipments',style: GoogleFonts.luckiestGuy(fontSize:13,color: Colors.white),),
+          children: [Text('Your Media,Our Equipments',style: GoogleFonts.aDLaMDisplay(fontSize:13,color: Colors.white),),
       SizedBox(height: 5,),
-      Text('LIGHTS,CAMERA,RENT',style: GoogleFonts.bangers(fontSize:22,color: Colors.red),),
+      Text('LIGHTS,CAMERA,RENT',style: GoogleFonts.aDLaMDisplay(fontSize:18,color: Colors.red),),
      
       ],),
     Image.asset('assets/images/gh4.png',height: 120)
@@ -337,7 +326,7 @@ Align(
      
       decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(18)),
        gradient: LinearGradient(
-      colors: [Colors.white, Color.fromARGB(255,29, 31, 35)], // Gradient colors
+      colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
       begin: Alignment.topLeft, // Start point
       end: Alignment.bottomRight, // End point
     ),),
@@ -346,11 +335,11 @@ Align(
       children: [
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text('Capture Moments,',style: GoogleFonts.sacramento(fontSize:25,color: Colors.white),),
+          children: [Text('Capture Moments,',style: GoogleFonts.aDLaMDisplay(fontSize:20,color: Colors.white),),
       SizedBox(height: 5,),
-      Text('Not Just Pictures',style: GoogleFonts.luckiestGuy(fontSize:25,color: Colors.black),),
+      Text('Not Just Pictures',style: GoogleFonts.aDLaMDisplay(fontSize:20,color: Colors.black),),
       SizedBox(height: 5,),
-      Text(' Rent Your Perfect Camera Today! ',style: GoogleFonts.bangers(fontSize:15 ,color: Colors.red),),
+      Text(' Rent Your Perfect Camera Today! ',style: GoogleFonts.aDLaMDisplay(fontSize:13 ,color: Colors.red),),
       ],),
     Image.asset('assets/images/nikon.png',height: 120)
     ],
@@ -359,7 +348,6 @@ Align(
         )
        ],
         ),),
-    
      SizedBox(height: 10,),
      Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -405,7 +393,7 @@ String formattedPrice = NumberFormat('#,##0').format(Event['price'] ?? 0);
       end: Alignment.bottomRight, // End point
     ),
       ),
-      child: ElevatedButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>Info(infoDetails:Event))),
+      child: ElevatedButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>Info2(infoDetails:Event))),
        style: ElevatedButton.styleFrom(
     backgroundColor: Colors.transparent, // Change button color
     foregroundColor: Colors.white, // Change text/icon color
@@ -494,7 +482,7 @@ String formattedPrice = NumberFormat('#,##0').format(photos['price'] ?? 0);
       end: Alignment.bottomRight, // End point
     ),
       ),
-      child: ElevatedButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>Info(infoDetails: photos))),
+      child: ElevatedButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>Info2(infoDetails: photos))),
        style: ElevatedButton.styleFrom(
     backgroundColor: Colors.transparent, // Change button color
     foregroundColor: Colors.white, // Change text/icon color
@@ -612,7 +600,7 @@ String formattedPrice = NumberFormat('#,##0').format(lights['price'] ?? 0);
       end: Alignment.bottomRight, // End point
     ),
       ),
-      child: ElevatedButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>Info(infoDetails:lights))),
+      child: ElevatedButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>Info2(infoDetails:lights))),
        style: ElevatedButton.styleFrom(
     backgroundColor: Colors.transparent, // Change button color
     foregroundColor: Colors.white, // Change text/icon color
@@ -692,7 +680,7 @@ String formattedPrice = NumberFormat('#,##0').format(accessories['price'] ?? 0);
       end: Alignment.bottomRight, // End point
     ),
       ),
-      child: ElevatedButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>Info(infoDetails:accessories))),
+      child: ElevatedButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>Info2(infoDetails:accessories))),
        style: ElevatedButton.styleFrom(
     backgroundColor: Colors.transparent, // Change button color
     foregroundColor: Colors.white, // Change text/icon color
@@ -914,9 +902,7 @@ String formattedPrice = NumberFormat('#,##0').format(accessories['price'] ?? 0);
     Container(margin: EdgeInsets.all(20),
     child: TextButton(onPressed:  _launchmap, child:  Text('32a Craig St, Ogudu, Lagos 105102, Lagos, Nigeria',style: GoogleFonts.mulish(fontSize:15,color: Colors.white),
       textAlign: TextAlign.justify,
-      softWrap: true,))
-    
-      ,)
+      softWrap: true,)))
      ],),)
 	],
 );
@@ -948,7 +934,7 @@ String formattedPrice = NumberFormat('#,##0').format(accessories['price'] ?? 0);
             child:   SingleChildScrollView(child:
       Column(children: [
      SizedBox(height: 50,),
-       
+      
 Align(
           alignment: Alignment.topCenter,
         
@@ -1264,109 +1250,6 @@ SizedBox(height: 20),
             //ABOUT PAGE ENDS
 
 
-//PROFILE PAGE
-
-
-    Center(child: 
-    Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-
-      Image.asset('assets/images/profile.png',height: 100,),
-      SizedBox(height: 10,),
-      Text(email??'',style:GoogleFonts.signika(textStyle: TextStyle(fontSize: 15,color:Colors.white,fontWeight: FontWeight.bold),)),
-      SizedBox(height: 10,),
-            Container(height: 40,
-          width: 250,
-      decoration:const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
-        gradient: LinearGradient(
-      colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
-      begin: Alignment.topLeft, // Start point
-      end: Alignment.bottomRight, // End point
-    ),
-      ),
-      child: ElevatedButton(onPressed:() {
-Navigator.push(context, MaterialPageRoute(builder: (context)=> Orders()));
-      },
-       style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.transparent, 
-    foregroundColor: Colors.white,
-
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(30), // Round edges
-    ),
-    elevation: 5, // Add shadow effect
-  ),
-       child: Text('ORDERS',style: GoogleFonts.aDLaMDisplay(fontSize:20,color: Colors.white),)),
-      ),
-      SizedBox(height: 20,),
-       Container(height: 40,
-          width: 250,
-      decoration:const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
-        gradient: LinearGradient(
-      colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
-      begin: Alignment.topLeft, // Start point
-      end: Alignment.bottomRight, // End point
-    ),
-      ),
-      child: ElevatedButton(onPressed:() {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return SimpleDialog(
-                  backgroundColor: Color.fromARGB(150, 40, 42, 47),
-                  
-			title: Text('PICKUP LOCACTION',style: GoogleFonts.aDLaMDisplay(fontSize:20,color: Colors.white)),
-			children: <Widget>[
-				SimpleDialogOption(
-					onPressed: _launchmap,
-							child: Text('32a Craig St, Ogudu, Lagos 105102, Lagos, Nigeria',style: GoogleFonts.aDLaMDisplay(fontSize:15,color: Colors.white),
-              textAlign: TextAlign.justify,
-      softWrap: true,),
-						),
-			
-	],
-);
-              },
-            );
-      },
-       style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.transparent, 
-    foregroundColor: Colors.white,
-
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(30), // Round edges
-    ),
-    elevation: 5, // Add shadow effect
-  ),
-       child: Text('PICKUP ADDRESS',style: GoogleFonts.aDLaMDisplay(fontSize:20,color: Colors.white),)),
-      ),
-      SizedBox(height: 20,),
-        
-   
-   Container(
-    height: 40,
-        width: 200,
-        decoration: BoxDecoration(
-        color: Colors.transparent,
-          borderRadius: BorderRadius.all(Radius.circular(15)),
-          border: Border.all(color: Colors.white,width: 1)
-        ),
-child: TextButton(onPressed: () {
-  signOut(context);
-  },
-   child: Text('LOGOUT',style:GoogleFonts.signika(textStyle: TextStyle(fontSize: 15,color: Colors.white,fontWeight: FontWeight.bold),)))
-   
-  ),
-  SizedBox(height: 10,),
-   TextButton(onPressed: (){}, child:   Text('Delete Account',style: TextStyle(color: Colors.red,fontSize: 10),))
-    
-    ],)
-    )
-
-    
-
-         //PROFILE PAGE ENDS
 
 
           ],
@@ -1383,7 +1266,7 @@ child: TextButton(onPressed: () {
     child: ListView.builder(
       itemCount: _filteredItems.length,
       itemBuilder: (context, index) {
-     //  String formattedPrice = NumberFormat('#,##0').format(_filteredItems[index]['price'] ?? 0);
+       String formattedPrice = NumberFormat('#,##0').format(_filteredItems[index]['price'] ?? 0);
                String? posterUrl = _filteredItems[index]['poster_url'];
             
         return ListTile(
@@ -1404,7 +1287,7 @@ child: TextButton(onPressed: () {
             child: ElevatedButton(
               onPressed: () {
                  var infoDetails = _filteredItems[index];
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>Info(infoDetails:infoDetails )),);},
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>Info2(infoDetails:infoDetails )),);},
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.transparent, // Button color
                 foregroundColor: Colors.white, // Text/icon color
@@ -1487,10 +1370,7 @@ child: TextButton(onPressed: () {
               filledIcon: Icons.notifications,
               outlinedIcon: Icons.notifications_outlined,
             ),
-            BarItem(
-              filledIcon: Icons.person,
-              outlinedIcon: Icons.person_outlined,
-            ),
+          
           ],
         )),
         

@@ -1,3 +1,4 @@
+import 'package:dotby1/authcheck.dart';
 import 'package:dotby1/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,7 @@ void main() async {
   runApp(const MyApp());
 
    Future.delayed(Duration(seconds: 2), () {
-    FlutterNativeSplash.remove();
+    FlutterNativeSplash.remove(); 
   });
 }
 class MyApp extends StatelessWidget {
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
          primarySwatch: Colors.blue,
       scaffoldBackgroundColor: Color.fromARGB(255, 31, 33, 37) ),
      
-      home:Home(),
+      home:AuthCheck(),
       debugShowCheckedModeBanner: false,
     );
   }
