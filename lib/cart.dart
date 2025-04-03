@@ -18,7 +18,7 @@ class Cart extends StatefulWidget {
 
 class _CartState extends State<Cart> {
  
-late int price;
+late double price;
 double totalPrice=0;
 late Stream<QuerySnapshot> cartItemsStream;
 

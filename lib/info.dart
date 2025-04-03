@@ -16,8 +16,8 @@ class Info extends StatefulWidget {
 
 class _InfoState extends State<Info> {
    int _orderQuantity = 1; // Initial quantity
-late int price;
-  late int basePrice;
+late double price;
+  late double basePrice;
 
   @override
   void initState() {
@@ -57,13 +57,14 @@ late int price;
   
   @override
   Widget build(BuildContext context) {
-   //    String? name = widget.infoDetails['title'];
+   
     String? posterUrl = widget.infoDetails['poster_url'];
-  //  int? price = widget.infoDetails['price'];
+
+bool isAvailable = widget.infoDetails['available'] ?? true;
 
 final formattedPrice = '₦${NumberFormat('#,###').format(price ?? 0)}';
 
-void addToCart(String productId, String title, int price, String imageUrl, int quantity) async {
+void addToCart(String productId, String title, double price, String imageUrl, int quantity) async {
   final user = FirebaseAuth.instance.currentUser;
   if (user == null) return;
 
@@ -244,14 +245,28 @@ Row(
       end: Alignment.bottomRight, // End point
     ),
       ),
-      child: ElevatedButton(onPressed: (){ addToCart( widget.infoDetails['id'], // Ensure this field exists in your Firestore data
-    widget.infoDetails['name'], 
-    widget.infoDetails['price'], 
-    widget.infoDetails['poster_url'],
-       _orderQuantity,);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Added to bag')));
-       },
+      child: ElevatedButton(onPressed: (){      if (isAvailable == false) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('This product is unavailable')),
+        );
+      } else if (isAvailable == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Product availability unknown')),
+        );
+      } else {
+        addToCart(
+          widget.infoDetails['id'],
+          widget.infoDetails['name'],
+          widget.infoDetails['price'],
+          widget.infoDetails['poster_url'],
+          _orderQuantity,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Added to bag')),
+        );
+      }
+    },
+
        style: ElevatedButton.styleFrom(
     backgroundColor: Colors.transparent, // Change button color
     foregroundColor: Colors.white, // Change text/icon color

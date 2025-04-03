@@ -5,6 +5,7 @@ import 'package:custom_sliding_segmented_control/custom_sliding_segmented_contro
 import 'package:dotby1/about.dart';
 import 'package:dotby1/cart.dart';
 import 'package:dotby1/confirm.dart';
+import 'package:dotby1/delete.dart';
 import 'package:dotby1/info.dart';
 import 'package:dotby1/login.dart';
 import 'package:dotby1/orders.dart';
@@ -122,73 +123,99 @@ final Uri stockUrl = Uri.parse('https://mediacreatorsplace.com/');
   }
 
   
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  //final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<List<Map<String, dynamic>>> fetchPhotos() async {
-    // Fetch all movie documents
-    QuerySnapshot snapshot = await _firestore.collection('photos').get();
+ 
+Future<List<Map<String, dynamic>>> fetchPhotos() async {
+  
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('products') // Main products collection
+        .doc('Photos') // The "events" category
+        .collection('items') // The actual products
+        .get();
 
-    // Convert documents to a list of maps, including the document ID (movie name)
     return snapshot.docs.map((doc) {
       return {
-        'id': doc.id,  // The movie name (Alien, for example)
-        ...doc.data() as Map<String, dynamic> // The rest of the movie details
+        'id': doc.id, // Document ID
+        ...doc.data() as Map<String, dynamic>, // Product details
       };
     }).toList();
-  }
+  
+}
 
-  Future<List<Map<String, dynamic>>> fetchLenses() async {
-    // Fetch all movie documents
-    QuerySnapshot snapshot = await _firestore.collection('lenses').get();
 
-    // Convert documents to a list of maps, including the document ID (movie name)
+
+Future<List<Map<String, dynamic>>> fetchLenses() async {
+  
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('products') // Main products collection
+        .doc('Lenses') // The "events" category
+        .collection('items') // The actual products
+        .get();
+
     return snapshot.docs.map((doc) {
       return {
-        'id': doc.id,  // The movie name (Alien, for example)
-        ...doc.data() as Map<String, dynamic> // The rest of the movie details
+        'id': doc.id, // Document ID
+        ...doc.data() as Map<String, dynamic>, // Product details
       };
     }).toList();
-  }
+  
+}
 
-    Future<List<Map<String, dynamic>>> fetchLights() async {
-    // Fetch all movie documents
-    QuerySnapshot snapshot = await _firestore.collection('Lights').get();
 
-    // Convert documents to a list of maps, including the document ID (movie name)
+
+Future<List<Map<String, dynamic>>> fetchLights() async {
+  
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('products') // Main products collection
+        .doc('Lights') // The "events" category
+        .collection('items') // The actual products
+        .get();
+
     return snapshot.docs.map((doc) {
       return {
-        'id': doc.id,  // The movie name (Alien, for example)
-        ...doc.data() as Map<String, dynamic> // The rest of the movie details
+        'id': doc.id, // Document ID
+        ...doc.data() as Map<String, dynamic>, // Product details
       };
     }).toList();
-  }
+  
+}
 
-     Future<List<Map<String, dynamic>>> fetchAccessories() async {
-    // Fetch all movie documents
-    QuerySnapshot snapshot = await _firestore.collection('Accessories').get();
 
-    // Convert documents to a list of maps, including the document ID (movie name)
+Future<List<Map<String, dynamic>>> fetchAccessories() async {
+  
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('products') // Main products collection
+        .doc('Accessories') // The "events" category
+        .collection('items') // The actual products
+        .get();
+
     return snapshot.docs.map((doc) {
       return {
-        'id': doc.id,  // The movie name (Alien, for example)
-        ...doc.data() as Map<String, dynamic> // The rest of the movie details
+        'id': doc.id, // Document ID
+        ...doc.data() as Map<String, dynamic>, // Product details
       };
     }).toList();
-  }
+  
+}
 
 
-   Future<List<Map<String, dynamic>>> fetchEvent() async {
-    // Fetch all movie documents
-    QuerySnapshot snapshot = await _firestore.collection('Event').get();
+  Future<List<Map<String, dynamic>>> fetchEvent() async {
+  
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('products') // Main products collection
+        .doc('Events') // The "events" category
+        .collection('items') // The actual products
+        .get();
 
-    // Convert documents to a list of maps, including the document ID (movie name)
     return snapshot.docs.map((doc) {
       return {
-        'id': doc.id,  // The movie name (Alien, for example)
-        ...doc.data() as Map<String, dynamic> // The rest of the movie details
+        'id': doc.id, // Document ID
+        ...doc.data() as Map<String, dynamic>, // Product details
       };
     }).toList();
-  }
+  
+}
 
    final FirebaseAuth auth = FirebaseAuth.instance;
 void signOut(BuildContext context) async {
@@ -370,18 +397,18 @@ Align(
    
      ],),
       SizedBox(height: 20,),
-       FutureBuilder<List<Map<String, dynamic>>>(
-            future: fetchEvent(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error fetching data'));
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return Center(child: Text('No data found'));
-              }
+     FutureBuilder<List<Map<String, dynamic>>>(
+  future: fetchEvent(),
+  builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return Center(child: CircularProgressIndicator());
+    } else if (snapshot.hasError) {
+      return Center(child: Text('Error fetching events'));
+    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+      return Center(child: Text('No events available'));
+    }
 
-              List<Map<String, dynamic>> Event = snapshot.data!;
+    List<Map<String, dynamic>> eventItems = snapshot.data!;
 
               return 
            Padding(
@@ -391,7 +418,7 @@ Align(
                  spacing: 30,
                  runSpacing: 20,
                  alignment: WrapAlignment.center,
-                             children: Event.map((Event){
+                             children: eventItems.map((Event){
                  
                     // Fetch 'poster_url' from the nested document data
                     String? posterUrl = Event['poster_url'] ; // Adjust field name to match your database
@@ -470,7 +497,7 @@ posterUrl != null
                 return Center(child: Text('No data found'));
               }
 
-              List<Map<String, dynamic>> photos = snapshot.data!;
+              List<Map<String, dynamic>> photosItems = snapshot.data!;
 
               return 
            Padding(
@@ -480,7 +507,7 @@ posterUrl != null
                  spacing: 30,
                  runSpacing: 20,
                  alignment: WrapAlignment.center,
-                             children: photos.map((photos){
+                             children: photosItems.map((photos){
                  
                     // Fetch 'poster_url' from the nested document data
                     String? posterUrl = photos['poster_url'] ; // Adjust field name to match your database
@@ -588,7 +615,7 @@ String formattedPrice = NumberFormat('#,##0').format(photos['price'] ?? 0);
                 return Center(child: Text('No data found'));
               }
 
-              List<Map<String, dynamic>> lights = snapshot.data!;
+              List<Map<String, dynamic>> lightsItems = snapshot.data!;
 
               return 
            Padding(
@@ -598,7 +625,7 @@ String formattedPrice = NumberFormat('#,##0').format(photos['price'] ?? 0);
                  spacing: 30,
                  runSpacing: 20,
                  alignment: WrapAlignment.center,
-                             children: lights.map((lights){
+                             children: lightsItems.map((lights){
                  
                     // Fetch 'poster_url' from the nested document data
                     String? posterUrl = lights['poster_url'] ; // Adjust field name to match your database
@@ -668,7 +695,7 @@ String formattedPrice = NumberFormat('#,##0').format(lights['price'] ?? 0);
                 return Center(child: Text('No data found'));
               }
 
-              List<Map<String, dynamic>> accessories = snapshot.data!;
+              List<Map<String, dynamic>> accessoriesItems = snapshot.data!;
 
               return 
            Padding(
@@ -678,7 +705,7 @@ String formattedPrice = NumberFormat('#,##0').format(lights['price'] ?? 0);
                  spacing: 30,
                  runSpacing: 20,
                  alignment: WrapAlignment.center,
-                             children: accessories.map((accessories){
+                             children: accessoriesItems.map((accessories){
                  
                     // Fetch 'poster_url' from the nested document data
                     String? posterUrl = accessories['poster_url'] ; // Adjust field name to match your database
@@ -1359,7 +1386,9 @@ child: TextButton(onPressed: () {
    
   ),
   SizedBox(height: 10,),
-   TextButton(onPressed: (){}, child:   Text('Delete Account',style: TextStyle(color: Colors.red,fontSize: 10),))
+   TextButton(onPressed:() {
+Navigator.push(context, MaterialPageRoute(builder: (context)=> Delete()));
+      }, child:   Text('Delete Account',style: TextStyle(color: Colors.red,fontSize: 10),))
     
     ],)
     )

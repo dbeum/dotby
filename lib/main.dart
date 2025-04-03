@@ -25,7 +25,15 @@ class MyApp extends StatelessWidget {
      theme: ThemeData(
        useMaterial3: true,
          primarySwatch: Colors.blue,
-      scaffoldBackgroundColor: Color.fromARGB(255, 31, 33, 37) ),
+      scaffoldBackgroundColor: Color.fromARGB(255, 31, 33, 37),
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+          color: Colors.red,  // Change the color globally
+          linearMinHeight: 4.0,  // For linear progress bar, customize height
+          circularTrackColor:Color.fromARGB(255, 31, 33, 37), // Circular progress background color
+        //  linearTrackColor: Colors.red,
+          
+        ),
+ ),
      
       home:AuthCheck(),
       debugShowCheckedModeBanner: false,

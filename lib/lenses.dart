@@ -13,20 +13,26 @@ class Lenses extends StatefulWidget {
 
 class _LensesState extends State<Lenses> {
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+ // final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   
-   Future<List<Map<String, dynamic>>> fetchLenses() async {
-    // Fetch all movie documents
-    QuerySnapshot snapshot = await _firestore.collection('lenses').get();
+   
+Future<List<Map<String, dynamic>>> fetchLenses() async {
+  
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('products') // Main products collection
+        .doc('Lenses') // The "events" category
+        .collection('items') // The actual products
+        .get();
 
-    // Convert documents to a list of maps, including the document ID (movie name)
     return snapshot.docs.map((doc) {
       return {
-        'id': doc.id,  // The movie name (Alien, for example)
-        ...doc.data() as Map<String, dynamic> // The rest of the movie details
+        'id': doc.id, // Document ID
+        ...doc.data() as Map<String, dynamic>, // Product details
       };
     }).toList();
-  }
+  
+}
+
   
   @override
   Widget build(BuildContext context) {
@@ -41,7 +47,7 @@ class _LensesState extends State<Lenses> {
                 return Center(child: Text('No data found'));
               }
 
-              List<Map<String, dynamic>> lenses = snapshot.data!;
+              List<Map<String, dynamic>> lensesItems = snapshot.data!;
 
               return 
            Padding(
@@ -51,7 +57,7 @@ class _LensesState extends State<Lenses> {
                  spacing: 30,
                  runSpacing: 20,
                  alignment: WrapAlignment.center,
-                             children: lenses.map((lenses){
+                             children: lensesItems.map((lenses){
                  
                     // Fetch 'poster_url' from the nested document data
                     String? posterUrl = lenses['poster_url'] ; // Adjust field name to match your database

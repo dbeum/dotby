@@ -12,21 +12,24 @@ class Primelenses extends StatefulWidget {
 }
 
 class _PrimelensesState extends State<Primelenses> {
- final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+// final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   
-   Future<List<Map<String, dynamic>>> fetchPrimelenses() async {
-    // Fetch all movie documents
-    QuerySnapshot snapshot = await _firestore.collection('Primelenses').get();
+Future<List<Map<String, dynamic>>> fetchPrimelenses() async {
+  
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('products') // Main products collection
+        .doc('Primelenses') // The "events" category
+        .collection('items') // The actual products
+        .get();
 
-    // Convert documents to a list of maps, including the document ID (movie name)
     return snapshot.docs.map((doc) {
       return {
-        'id': doc.id,  // The movie name (Alien, for example)
-        ...doc.data() as Map<String, dynamic> // The rest of the movie details
+        'id': doc.id, // Document ID
+        ...doc.data() as Map<String, dynamic>, // Product details
       };
     }).toList();
-  }
   
+}
   @override
   Widget build(BuildContext context) {
     return   FutureBuilder<List<Map<String, dynamic>>>(
@@ -40,7 +43,7 @@ class _PrimelensesState extends State<Primelenses> {
                 return Center(child: Text('No data found'));
               }
 
-              List<Map<String, dynamic>> Primelenses = snapshot.data!;
+              List<Map<String, dynamic>> PrimelensesIems = snapshot.data!;
 
               return 
            Padding(
@@ -50,7 +53,7 @@ class _PrimelensesState extends State<Primelenses> {
                  spacing: 30,
                  runSpacing: 20,
                  alignment: WrapAlignment.center,
-                             children: Primelenses.map((Primelenses){
+                             children: PrimelensesIems.map((Primelenses){
                  
                     // Fetch 'poster_url' from the nested document data
                     String? posterUrl = Primelenses['poster_url'] ; // Adjust field name to match your database

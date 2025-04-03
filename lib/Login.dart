@@ -4,6 +4,8 @@ import 'package:dotby1/firebase_options.dart';
 import 'package:dotby1/home.dart';
 import 'package:dotby1/home2.dart';
 import 'package:dotby1/register.dart';
+import 'package:dotby1/team.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +69,7 @@ Container(
           Text('EMAIL',style: TextStyle(fontSize: 11,fontWeight: FontWeight.bold,color: Colors.white),),
        Container(
         height: 30,
-        width: 200,
+        width: 240,
        
         child: TextField(
           controller:_email ,
@@ -85,7 +87,7 @@ Container(
           Text('PASSWORD',style: TextStyle(fontSize: 11,fontWeight: FontWeight.bold,color: Colors.white),),
        Container(
         height: 30,
-        width: 200,
+        width: 240,
       //   decoration: BoxDecoration(
       //  //   border: Border.all(color: Colors.black,width: 2),
       //    // borderRadius: BorderRadius.all(Radius.circular(5))
@@ -117,23 +119,44 @@ Container(
          onPressed: () async{
       
           
-           final email =_email.text;
-           final password = _password.text;
-       try {
-    final UserCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-     if (UserCredential.user != null) {
-      final user = UserCredential.user!;
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
-   
-           print(UserCredential);
-          
-        }}
-      on FirebaseAuthException  catch (e){
-        if (e.code=='invalid-credential'){
-          print('Invalid Credential');
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Invalid Credentials')));
-        }  
-        }
+       final email = _email.text;
+final password = _password.text;
+
+try {
+  final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+    email: email,
+    password: password,
+  );
+
+  if (userCredential.user != null) {
+    final user = userCredential.user!;
+    
+    // Fetch user data from Firestore
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+
+    if (userDoc.exists) {
+      String role = userDoc['role']; // Retrieve role
+
+      // Navigate based on role
+      if (role == 'admin') {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Team()));
+      }  else {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home())); // Default user page
+      }
+
+      print('Logged in as: $role');
+    } else {
+      print('User data not found');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('User data not found')));
+    }
+  }
+} on FirebaseAuthException catch (e) {
+  if (e.code == 'invalid-credential') {
+    print('Invalid Credentials');
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Invalid Credentials')));
+  }
+}
+
          }, 
          child: Text('LOGIN',style: TextStyle(color: Colors.white),),
          

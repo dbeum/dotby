@@ -12,20 +12,26 @@ class Zoomlenses extends StatefulWidget {
 }
 
 class _ZoomlensesState extends State<Zoomlenses> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+ // final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   
-   Future<List<Map<String, dynamic>>> fetchZoomlenses() async {
-    // Fetch all movie documents
-    QuerySnapshot snapshot = await _firestore.collection('Zoomlenses').get();
+   
+Future<List<Map<String, dynamic>>> fetchZoomlenses() async {
+  
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('products') // Main products collection
+        .doc('Zoomlenses') // The "events" category
+        .collection('items') // The actual products
+        .get();
 
-    // Convert documents to a list of maps, including the document ID (movie name)
     return snapshot.docs.map((doc) {
       return {
-        'id': doc.id,  // The movie name (Alien, for example)
-        ...doc.data() as Map<String, dynamic> // The rest of the movie details
+        'id': doc.id, // Document ID
+        ...doc.data() as Map<String, dynamic>, // Product details
       };
     }).toList();
-  }
+  
+}
+
   
   @override
   Widget build(BuildContext context) {
@@ -40,7 +46,7 @@ class _ZoomlensesState extends State<Zoomlenses> {
                 return Center(child: Text('No data found'));
               }
 
-              List<Map<String, dynamic>> Zoomlenses = snapshot.data!;
+              List<Map<String, dynamic>> ZoomlensesItems = snapshot.data!;
 
               return 
            Padding(
@@ -50,7 +56,7 @@ class _ZoomlensesState extends State<Zoomlenses> {
                  spacing: 30,
                  runSpacing: 20,
                  alignment: WrapAlignment.center,
-                             children: Zoomlenses.map((Zoomlenses){
+                             children: ZoomlensesItems.map((Zoomlenses){
                  
                     // Fetch 'poster_url' from the nested document data
                     String? posterUrl = Zoomlenses['poster_url'] ; // Adjust field name to match your database

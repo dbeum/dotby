@@ -14,8 +14,8 @@ class Info2 extends StatefulWidget {
 
 class _Info2State extends State<Info2> {
    int _orderQuantity = 1; // Initial quantity
-late int price;
-  late int basePrice;
+late double price;
+  late double basePrice;
 
   @override
   void initState() {
@@ -59,7 +59,8 @@ late int price;
     String? posterUrl = widget.infoDetails['poster_url'];
   //  int? price = widget.infoDetails['price'];
 
-final formattedPrice = '₦${NumberFormat('#,###').format(price ?? 0)}';
+final formattedPrice = '₦${NumberFormat('#,###').format(price.toInt())}';
+
 
 
     return  Scaffold(

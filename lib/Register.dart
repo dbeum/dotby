@@ -73,7 +73,7 @@ class _RegisterState extends State<Register> {
                         ),
                         Container(
                           height: 30,
-                          width: 200,
+                          width: 240,
                           // decoration: BoxDecoration(
                           //   border: Border.all(color: Colors.black, width: 2),
                           //   borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -97,7 +97,7 @@ class _RegisterState extends State<Register> {
                         ),
                         Container(
                           height: 30,
-                          width: 200,
+                          width: 240,
                           // decoration: BoxDecoration(
                           //   border: Border.all(color: Colors.black, width: 2),
                           //   borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -125,10 +125,11 @@ class _RegisterState extends State<Register> {
                           ),
 
                           child: TextButton(
+                          //role only necssary when there would be differnet user tiers
                             onPressed: () async {
                               final email = _email.text;
                               final password = _password.text;
-                             
+                             final role = 'admin'; 
                               try {
                                 final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
                                   email: email,
@@ -139,7 +140,7 @@ class _RegisterState extends State<Register> {
 
                                 await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
                                   'email': email,
-                                  
+                                   'role': role,
                                 });
 
                                 print('User registered: ${userCredential.user!.uid}');

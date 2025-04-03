@@ -12,6 +12,8 @@ class Confrimorder extends StatefulWidget {
 }
 
 class _ConfrimorderState extends State<Confrimorder> {
+   final DateFormat dateFormat = DateFormat('yyyy-MM-dd');
+
   @override
   Widget build(BuildContext context) {
      // print(widget.orderDetails);
@@ -24,6 +26,11 @@ final pickupDate = item['pickupDate'] != null
   final returnDate = item['returnDate'] != null
       ? (item['returnDate'] as Timestamp).toDate()
       : null;
+
+      final orderDate = widget.orderDetails['orderDate'] != null
+        ? dateFormat.format((widget.orderDetails['orderDate'] as Timestamp).toDate())
+        : 'N/A';
+
 
   // Format the DateTime using DateFormat
   final formattedPickupDate = pickupDate != null
@@ -47,7 +54,7 @@ final pickupDate = item['pickupDate'] != null
               children: [
               Text('Ticket Number: ${widget.orderDetails['ticketNumber']}', style: TextStyle(fontSize: 18)),
                 SizedBox(height: 20),
-              //  Text('Total Price: ₦${totalPrice.toStringAsFixed(2)}', style: TextStyle(fontSize: 18)),
+               Text('Order Date: $orderDate', style: TextStyle(fontSize: 18)),
                 SizedBox(height: 20),
                 Text('Order Details:', style: TextStyle(fontSize: 18)),
                 SizedBox(height: 10),
@@ -68,6 +75,7 @@ final pickupDate = item['pickupDate'] != null
                               Text('Duration: ${item['duration']} days', style: TextStyle(fontSize: 14)),
                               Text('Pickup Date: ${formattedPickupDate}', style: TextStyle(fontSize: 14)),
                               Text('Return Date: ${formattedReturnDate}', style: TextStyle(fontSize: 14)),
+                             
                             ],
                           ),
                         ],
