@@ -40,6 +40,7 @@ dependencies:
   flutter_dotenv: ^5.2.1
   clay_containers: ^0.3.4
   carousel_slider: ^5.0.0
+  flutter_local_notifications: ^19.1.0
 
 
 

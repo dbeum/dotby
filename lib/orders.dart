@@ -60,7 +60,11 @@ Future<List<Map<String, dynamic>>> fetchOrders() async {
 Center(child:  Image.asset('assets/images/profile.png',height: 100,),),
  SizedBox(height: 10,),
  Text('ORDERS',style:GoogleFonts.signika(textStyle: TextStyle(fontSize: 20,color:Colors.white,fontWeight: FontWeight.bold),)),
-
+SizedBox(height: 10,),
+Padding(padding: EdgeInsets.all(10),child: Text('Heads up! Before coming to pick up your order, kindly confirm with our customer rep on WhatsApp to avoid any delays. We got you!',
+textAlign: TextAlign.justify,
+softWrap: true,
+style: GoogleFonts.signika(color: Colors.white),)),
  SizedBox(height: 20,),
 Expanded(child: 
 FutureBuilder<List<Map<String, dynamic>>>(

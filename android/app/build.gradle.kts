@@ -52,3 +52,4 @@ dependencies {
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-messaging")
 }
+apply plugin: 'com.google.gms.google-services'

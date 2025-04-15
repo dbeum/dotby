@@ -78,9 +78,13 @@ Container(
           enableSuggestions: true,
               style: TextStyle( color:Colors.white,),
           decoration: InputDecoration(
+            focusedBorder: UnderlineInputBorder(
+      borderSide: BorderSide(color: Colors.white), // Change this to the color you want when focused
+    ),
             enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color:  Colors.black,)),
         contentPadding: EdgeInsets.symmetric(vertical: 15), // Adjust the vertical padding
       ),
+      cursorColor: Colors.white
           ),
        ),
        SizedBox(height: 20,),
@@ -88,17 +92,18 @@ Container(
        Container(
         height: 30,
         width: 240,
-      //   decoration: BoxDecoration(
-      //  //   border: Border.all(color: Colors.black,width: 2),
-      //    // borderRadius: BorderRadius.all(Radius.circular(5))
-      //   ),
+     
         child: TextField(
           controller: _password,
           autocorrect: false,
           enableSuggestions: true,
+          cursorColor: Colors.white,
           obscureText: true,
                 style: TextStyle( color:Colors.white),
             decoration: InputDecoration(
+                 focusedBorder: UnderlineInputBorder(
+      borderSide: BorderSide(color: Colors.white), // Change this to the color you want when focused
+    ),
               enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color:  Colors.black,)),
         contentPadding: EdgeInsets.symmetric(vertical: 15), // Adjust the vertical padding
       ),

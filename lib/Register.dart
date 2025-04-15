@@ -77,14 +77,18 @@ class _RegisterState extends State<Register> {
                           // decoration: BoxDecoration(
                           //   border: Border.all(color: Colors.black, width: 2),
                           //   borderRadius: BorderRadius.all(Radius.circular(5)),
-                          // ),
+                          // ), 
                           child: TextField(
                             controller: _email,
                             keyboardType: TextInputType.emailAddress,
                             autocorrect: false,
+                            cursorColor: Colors.white,
                             enableSuggestions: true,
                                 style: TextStyle(  color:Colors.white,),
                             decoration: InputDecoration(
+                                 focusedBorder: UnderlineInputBorder(
+      borderSide: BorderSide(color: Colors.white), // Change this to the color you want when focused
+    ),
                                 enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black,)),
                               contentPadding: EdgeInsets.symmetric(vertical: 15),
                             ),
@@ -106,9 +110,13 @@ class _RegisterState extends State<Register> {
                             controller: _password,
                             autocorrect: false,
                             enableSuggestions: true,
+                            cursorColor: Colors.white,
                             obscureText: true,
                                  style: TextStyle(  color:  Colors.black,),
                             decoration: InputDecoration(
+                                 focusedBorder: UnderlineInputBorder(
+      borderSide: BorderSide(color: Colors.white), // Change this to the color you want when focused
+    ),
                                 enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color:  Colors.black,)),
                               contentPadding: EdgeInsets.symmetric(vertical: 15),
                             ),

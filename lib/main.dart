@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       title: 'DOTBY PRODUCTIONS',
      theme: ThemeData(
        useMaterial3: true,
-         primarySwatch: Colors.blue,
+         primarySwatch: Colors.red,
       scaffoldBackgroundColor: Color.fromARGB(255, 31, 33, 37),
       progressIndicatorTheme: ProgressIndicatorThemeData(
           color: Colors.red,  // Change the color globally

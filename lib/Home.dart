@@ -6,6 +6,7 @@ import 'package:dotby1/about.dart';
 import 'package:dotby1/cart.dart';
 import 'package:dotby1/confirm.dart';
 import 'package:dotby1/delete.dart';
+import 'package:dotby1/history.dart';
 import 'package:dotby1/info.dart';
 import 'package:dotby1/login.dart';
 import 'package:dotby1/orders.dart';
@@ -50,6 +51,8 @@ List<Map<String, dynamic>> _filteredItems = []; // Filtered Firebase data
     pageController = PageController(initialPage: selectedIndex);
      fetchAllData();
  checkUserLoggedIn(); 
+
+ 
   }
   void _startSearch(String query) {
   setState(() {
@@ -257,6 +260,7 @@ void fetchAllData() async {
           ),
           style: TextStyle(color: Colors.white),
           onChanged: _startSearch,
+           cursorColor: Colors.red
         )
       : 
           Stack(children: [
@@ -1325,6 +1329,30 @@ Navigator.push(context, MaterialPageRoute(builder: (context)=> Orders()));
     elevation: 5, // Add shadow effect
   ),
        child: Text('ORDERS',style: GoogleFonts.aDLaMDisplay(fontSize:20,color: Colors.white),)),
+      ),
+      SizedBox(height: 20,),
+        Container(height: 40,
+          width: 250,
+      decoration:const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
+        gradient: LinearGradient(
+      colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
+      begin: Alignment.topLeft, // Start point
+      end: Alignment.bottomRight, // End point
+    ),
+      ),
+      child: ElevatedButton(onPressed:() {
+Navigator.push(context, MaterialPageRoute(builder: (context)=> History()));
+      },
+       style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.transparent, 
+    foregroundColor: Colors.white,
+
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(30), // Round edges
+    ),
+    elevation: 5, // Add shadow effect
+  ),
+       child: Text('ORDERS HISTORY',style: GoogleFonts.aDLaMDisplay(fontSize:20,color: Colors.white),)),
       ),
       SizedBox(height: 20,),
        Container(height: 40,

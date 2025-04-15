@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dotby1/admincheckout.dart';
 import 'package:dotby1/login.dart';
+import 'package:dotby1/orderstatus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -83,6 +85,18 @@ void signOut(BuildContext context) async {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+ TextButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context)=>Checkout()));}, child: Text('CHECKOUT',style: TextStyle(color: Colors.white),)),
+ Container(
+    height: 20,
+    width: 2,
+    color: Colors.white,
+  ),
+  TextButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context)=>Return()));}, child: Text('ORDER STATUS',style: TextStyle(color: Colors.white),)),
+            ],),
+           
            DropdownButtonHideUnderline( // Hides default underline
   child: DropdownButton<String>(
     value: _selectedCategory,
