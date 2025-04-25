@@ -8,11 +8,15 @@ import 'package:dotby1/confirm.dart';
 import 'package:dotby1/delete.dart';
 import 'package:dotby1/history.dart';
 import 'package:dotby1/info.dart';
+
 import 'package:dotby1/login.dart';
 import 'package:dotby1/orders.dart';
 import 'package:dotby1/primelenses.dart';
 import 'package:dotby1/register.dart';
 import 'package:dotby1/search.dart';
+import 'package:dotby1/vendor.dart';
+import 'package:dotby1/vendorregister.dart';
+import 'package:dotby1/vendorwaitpage.dart';
 
 
 import 'package:dotby1/zoomlenses.dart';
@@ -241,6 +245,45 @@ void fetchAllData() async {
     _filteredItems = _items;
   });
 }
+
+
+Future<void> checkVendorStatus(BuildContext context) async {
+  final uid = FirebaseAuth.instance.currentUser?.uid;
+  if (uid == null) {
+    // User not logged in
+    print("User not logged in");
+    return;
+  }
+
+  final query = await FirebaseFirestore.instance
+      .collection('vendors')
+      .where('uid', isEqualTo: uid)
+      .get();
+
+  if (query.docs.isNotEmpty) {
+    final data = query.docs.first.data();
+    if (data['contacted'] == true) {
+      // Approved vendor
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => Vendor()),
+      );
+    } else {
+      // Registered but not yet approved
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => Vendorwaitpage()),
+      );
+    }
+  } else {
+    // Not registered
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => VendorRegister()),
+    );
+  }
+}
+
   @override
   Widget build(BuildContext context) {
      User? user = auth.currentUser;
@@ -424,8 +467,7 @@ Align(
                  alignment: WrapAlignment.center,
                              children: eventItems.map((Event){
                  
-                    // Fetch 'poster_url' from the nested document data
-                    String? posterUrl = Event['poster_url'] ; // Adjust field name to match your database
+             
 String formattedPrice = NumberFormat('#,##0').format(Event['price'] ?? 0);
                  return  Container(height: 200,
     width: 150,
@@ -449,15 +491,22 @@ String formattedPrice = NumberFormat('#,##0').format(Event['price'] ?? 0);
        child:Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-posterUrl != null
-    ? CachedNetworkImage(
-        imageUrl: posterUrl,
-        
-      )
-    : Image.asset(
-        'assets/images/logo.png',  // Use a local placeholder image
-      ),
-
+ClipRRect(
+  borderRadius: BorderRadius.circular(12), 
+  child: Event['profileImage'] != null && Event['profileImage'].toString().isNotEmpty
+      ? Image.network(
+          Event['profileImage'],
+          width: 80,
+          height: 80,
+          fit: BoxFit.cover,
+        )
+      : Image.asset(
+          'assets/images/logo.png',
+          width: 80,
+          height: 80,
+          fit: BoxFit.cover,
+        ),
+),
         
             Text('₦$formattedPrice',style: GoogleFonts.mulish(fontSize:15,fontWeight:FontWeight.bold, color: Colors.white),),
        ],),
@@ -513,8 +562,7 @@ posterUrl != null
                  alignment: WrapAlignment.center,
                              children: photosItems.map((photos){
                  
-                    // Fetch 'poster_url' from the nested document data
-                    String? posterUrl = photos['poster_url'] ; // Adjust field name to match your database
+                  
 String formattedPrice = NumberFormat('#,##0').format(photos['price'] ?? 0);
                  return  Container(height: 200,
     width: 150,
@@ -538,15 +586,22 @@ String formattedPrice = NumberFormat('#,##0').format(photos['price'] ?? 0);
        child:Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          posterUrl != null
-                            ? Image.network(
-                                posterUrl,
-                              
-                              )
-                            : Image.asset(
-                                'assets/images/logo.png',  // Use a local placeholder image
-                               
-                              ),
+        ClipRRect(
+  borderRadius: BorderRadius.circular(12), 
+  child: photos['profileImage'] != null && photos['profileImage'].toString().isNotEmpty
+      ? Image.network(
+          photos['profileImage'],
+          width: 80,
+          height: 80,
+          fit: BoxFit.cover,
+        )
+      : Image.asset(
+          'assets/images/logo.png',
+          width: 80,
+          height: 80,
+          fit: BoxFit.cover,
+        ),
+),
            Text(photos['name']??'',style: GoogleFonts.aDLaMDisplay(fontSize:15,fontWeight:FontWeight.bold, color: Colors.white),
          maxLines:1,
          overflow: TextOverflow.ellipsis,
@@ -631,8 +686,7 @@ String formattedPrice = NumberFormat('#,##0').format(photos['price'] ?? 0);
                  alignment: WrapAlignment.center,
                              children: lightsItems.map((lights){
                  
-                    // Fetch 'poster_url' from the nested document data
-                    String? posterUrl = lights['poster_url'] ; // Adjust field name to match your database
+                 
 String formattedPrice = NumberFormat('#,##0').format(lights['price'] ?? 0);
                  return  Container(height: 200,
     width: 150,
@@ -656,15 +710,22 @@ String formattedPrice = NumberFormat('#,##0').format(lights['price'] ?? 0);
        child:Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          posterUrl != null
-                            ? Image.network(
-                                posterUrl,
-                              
-                              )
-                            : Image.asset(
-                                'assets/images/logo.png', 
-                               
-                              ),
+              ClipRRect(
+  borderRadius: BorderRadius.circular(12), 
+  child: lights['profileImage'] != null && lights['profileImage'].toString().isNotEmpty
+      ? Image.network(
+          lights['profileImage'],
+          width: 80,
+          height: 80,
+          fit: BoxFit.cover,
+        )
+      : Image.asset(
+          'assets/images/logo.png',
+          width: 80,
+          height: 80,
+          fit: BoxFit.cover,
+        ),
+),
            Text(lights['name']??'',style: GoogleFonts.aDLaMDisplay(fontSize:15,fontWeight:FontWeight.bold, color: Colors.white),
          maxLines:1,
          overflow: TextOverflow.ellipsis,
@@ -711,8 +772,7 @@ String formattedPrice = NumberFormat('#,##0').format(lights['price'] ?? 0);
                  alignment: WrapAlignment.center,
                              children: accessoriesItems.map((accessories){
                  
-                    // Fetch 'poster_url' from the nested document data
-                    String? posterUrl = accessories['poster_url'] ; // Adjust field name to match your database
+              
 String formattedPrice = NumberFormat('#,##0').format(accessories['price'] ?? 0);
                  return  Container(height: 200,
     width: 150,
@@ -736,15 +796,22 @@ String formattedPrice = NumberFormat('#,##0').format(accessories['price'] ?? 0);
        child:Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          posterUrl != null
-                            ? Image.network(
-                                posterUrl,
-                              
-                              )
-                            : Image.asset(
-                                'assets/images/logo.png', 
-                               
-                              ),
+          ClipRRect(
+  borderRadius: BorderRadius.circular(12), 
+  child: accessories['profileImage'] != null && accessories['profileImage'].toString().isNotEmpty
+      ? Image.network(
+          accessories['profileImage'],
+          width: 80,
+          height: 80,
+          fit: BoxFit.cover,
+        )
+      : Image.asset(
+          'assets/images/logo.png',
+          width: 80,
+          height: 80,
+          fit: BoxFit.cover,
+        ),
+),
            Text(accessories['name']??'',style: GoogleFonts.aDLaMDisplay(fontSize:15,fontWeight:FontWeight.bold, color: Colors.white),
          maxLines:1,
          overflow: TextOverflow.ellipsis,
@@ -803,7 +870,8 @@ String formattedPrice = NumberFormat('#,##0').format(accessories['price'] ?? 0);
       end: Alignment.bottomRight, // End point
     ),
       ),
-      child: ElevatedButton(onPressed:() {},
+      child: ElevatedButton(onPressed:() {    checkVendorStatus(context);
+      },
        style: ElevatedButton.styleFrom(
     backgroundColor: Colors.transparent, // Change button color
     foregroundColor: Colors.white, // Change text/icon color

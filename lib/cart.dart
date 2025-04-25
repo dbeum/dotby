@@ -20,6 +20,7 @@ class _CartState extends State<Cart> {
  
 late double price;
 double totalPrice=0;
+late int stock;
 late Stream<QuerySnapshot> cartItemsStream;
 
  DateTime? _startDate;
@@ -47,23 +48,30 @@ late Stream<QuerySnapshot> cartItemsStream;
   }
 
   void updateCartQuantity(String productId, int change) async {
-    final cartRef = FirebaseFirestore.instance
-        .collection('carts')
-        .doc(user!.uid)
-        .collection('items')
-        .doc(productId);
+  final cartRef = FirebaseFirestore.instance
+      .collection('carts')
+      .doc(user!.uid)
+      .collection('items')
+      .doc(productId);
 
-    final cartItem = await cartRef.get();
-    if (cartItem.exists) {
-      final currentQuantity = cartItem['quantity'] ?? 1;
-      if (currentQuantity + change > 0) {
-        cartRef.update({'quantity': currentQuantity + change});
-      } else {
-        cartRef.delete(); // Remove item if quantity reaches 0
-      }
-    }
+  final cartItem = await cartRef.get();
+  if (!cartItem.exists) return;
+
+  final currentQuantity = cartItem['quantity'] ?? 1;
+  final stock = cartItem['stock'] ?? 0; // read from cart, not products
+
+  final newQuantity = currentQuantity + change;
+
+  if (change > 0 && newQuantity <= stock) {
+    cartRef.update({'quantity': newQuantity});
+  } else if (change < 0 && newQuantity > 0) {
+    cartRef.update({'quantity': newQuantity});
+  } else if (newQuantity <= 0) {
+    cartRef.delete();
   }
+}
 
+  
   void removeFromCart(String productId) {
     FirebaseFirestore.instance
         .collection('carts')
@@ -72,7 +80,6 @@ late Stream<QuerySnapshot> cartItemsStream;
         .doc(productId)
         .delete();
   }
-
 Future<void> checkout() async {
   if (user == null) return;
 
@@ -103,15 +110,15 @@ Future<void> checkout() async {
   final endDateFormatted = DateTime(_endDate!.year, _endDate!.month, _endDate!.day);
   final duration = _duration;
 
-  // Process each cart item separately
+  // Process each cart item
   for (var item in cartItems.docs) {
-    final ticketNumber = generateTicketNumber(); // Unique ticket for each item
+    final ticketNumber = generateTicketNumber();
     final price = item['price'] ?? 0;
     final quantity = item['quantity'] ?? 1;
     final title = item['title'] ?? 'Unknown';
     final image = item['image'] ?? '';
 
-    // Create a separate order for each item
+    // 1. Place the order
     await FirebaseFirestore.instance.collection('orders').doc(ticketNumber).set({
       'ticketNumber': ticketNumber,
       'userId': user!.uid,
@@ -129,20 +136,32 @@ Future<void> checkout() async {
       }
     });
 
-    // Remove the item from the cart after checkout
-    await item.reference.delete();
+   final productRef = FirebaseFirestore.instance.collection('products').doc(item.id);
+final productSnap = await productRef.get();
 
-      Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(
-      builder: (context) => Orders(), // Display generic confirmation
-    ),
-  );
+if (!productSnap.exists) {
+  debugPrint('Product ${item.id} no longer exists, skipping...');
+  continue; // Skip this item in the cart
+}
+
+final currentStock = productSnap['stock'] ?? 0;
+await productRef.update({
+  'stock': currentStock - quantity,
+});
+
+
+
+    // 3. Remove item from cart
+    await item.reference.delete();
   }
 
-  
- 
+  // 4. Navigate to Orders screen once after all items are processed
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (context) => Orders()),
+  );
 }
+
 
 
 String generateTicketNumber() {
@@ -202,6 +221,11 @@ String generateTicketNumber() {
                     final price = item['price'] ?? 0;
                     
                     final quantity = item['quantity'] ?? 1;
+                    final productId = item.id;
+                    final stock = item['stock'] ?? 1; 
+                    
+                    final atMax = quantity >= stock;
+
                    final itemPrice = price * quantity;
                     totalPrice += itemPrice; 
 
@@ -227,6 +251,7 @@ String generateTicketNumber() {
                                       Text(_startDate != null && _endDate != null
             ? 'Duration: $_duration days'
             : 'Select dates',style: TextStyle(color: Colors.white),),
+          
                      SizedBox(height: 10,),
                      Row(
           mainAxisSize: MainAxisSize.min,
@@ -247,7 +272,7 @@ String generateTicketNumber() {
     width: double.infinity, // Forces button to take full width
     height: double.infinity, // Forces button to take full height
     child: ElevatedButton(
-      onPressed: () => updateCartQuantity(item.id, -1),
+      onPressed:quantity > 1 ? () => updateCartQuantity(productId, -1) : null,
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.transparent, // Keep button transparent for gradient effect
         foregroundColor: Colors.white,
@@ -287,7 +312,7 @@ String generateTicketNumber() {
     width: double.infinity, // Forces button to take full width
     height: double.infinity, // Forces button to take full height
     child: ElevatedButton(
-      onPressed:  () => updateCartQuantity(item.id, 1), 
+      onPressed:atMax ? null : () => updateCartQuantity(productId, 1),
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.transparent, // Keep button transparent for gradient effect
         foregroundColor: Colors.white,
@@ -309,19 +334,9 @@ String generateTicketNumber() {
         ),
 SizedBox(height: 10,)
               
-                                // Row(
-                                //   children: [
-                                //     IconButton(
-                                //       icon: Icon(Icons.remove, color: Colors.white),
-                                //       onPressed: () => updateCartQuantity(item.id, -1),
-                                //     ),
-                                //     Text(quantity.toString(), style: TextStyle(color: Colors.white, fontSize: 18)),
-                                //     IconButton(
-                                //       icon: Icon(Icons.add, color: Colors.white),
-                                //       onPressed: () => updateCartQuantity(item.id, 1),
-                                //     ),
-                                //   ],
-                                // ),
+              
+
+
                         
               
                               ],
@@ -423,5 +438,3 @@ floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
-
-

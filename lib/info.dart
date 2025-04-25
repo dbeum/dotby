@@ -18,20 +18,24 @@ class _InfoState extends State<Info> {
    int _orderQuantity = 1; // Initial quantity
 late double price;
   late double basePrice;
+  late int stock;
 
   @override
   void initState() {
     super.initState();
       basePrice = widget.infoDetails['price'] ?? 0;
+      stock = widget.infoDetails['stock'] ?? 0;
      price = basePrice; 
   }
 
 
   void _increment() {
-    setState(() {
-      _orderQuantity++;
-     price = basePrice * _orderQuantity;
-    });
+   if (_orderQuantity < stock) { // Ensure quantity doesn't exceed available stock
+      setState(() {
+        _orderQuantity++;
+        price = basePrice * _orderQuantity;
+      });
+    }
   }
 
   void _decrement() {
@@ -64,31 +68,56 @@ bool isAvailable = widget.infoDetails['available'] ?? true;
 
 final formattedPrice = '₦${NumberFormat('#,###').format(price ?? 0)}';
 
-void addToCart(String productId, String title, double price, String imageUrl, int quantity) async {
+void addToCart(String productId, String title, double price, String imageUrl, int quantity, int stock) async {
   final user = FirebaseAuth.instance.currentUser;
   if (user == null) return;
 
   final cartRef = FirebaseFirestore.instance.collection('carts').doc(user.uid).collection('items').doc(productId);
+  final productRef = FirebaseFirestore.instance.collection('products').doc('Events').collection('items').doc(productId);
 
   final cartItem = await cartRef.get();
-
+  
+  // Check if the product is already in the cart
   if (cartItem.exists) {
-    // If product exists, increase quantity
-    cartRef.update({
-      'quantity': FieldValue.increment(quantity),
-      'totalPrice': FieldValue.increment(basePrice * quantity),
+    int existingQuantity = cartItem.data()?['quantity'] ?? 0;
+    int newTotalQuantity = existingQuantity + quantity;
+
+    // Check if there's enough stock for the new quantity
+    if (newTotalQuantity > stock) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Cannot add more than available stock')),
+      );
+      return;
+    }
+
+    // Update the cart with new quantity and total price
+    await cartRef.update({
+      'quantity': newTotalQuantity,
+      'totalPrice': basePrice * newTotalQuantity,
+    });
+
+    // Decrease the stock in the product document
+    await productRef.update({
+      'stock': stock - quantity,  // Reduce stock by the added quantity
     });
   } else {
-    // Add new product to cart
-    cartRef.set({
+    // If the product isn't in the cart, add it with the given quantity
+    await cartRef.set({
       'title': title,
       'price': price,
       'image': imageUrl,
       'quantity': quantity,
+      'stock': stock,
       'totalPrice': basePrice * quantity,
+    });
+
+    // Decrease the stock in the product document
+    await productRef.update({
+      'stock': stock - quantity,  // Reduce stock by the added quantity
     });
   }
 }
+
     return  Scaffold(
       backgroundColor: Color.fromARGB(255,	19, 20, 22),
       appBar: AppBar(elevation: 0,backgroundColor: Colors.transparent,),
@@ -141,7 +170,7 @@ Row(
     width: double.infinity, // Forces button to take full width
     height: double.infinity, // Forces button to take full height
     child: ElevatedButton(
-      onPressed: _increment, 
+      onPressed:   _orderQuantity >= stock ? null : _increment, 
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.transparent, // Keep button transparent for gradient effect
         foregroundColor: Colors.white,
@@ -260,6 +289,7 @@ Row(
           widget.infoDetails['price'],
           widget.infoDetails['poster_url'],
           _orderQuantity,
+          widget.infoDetails['stock']
         );
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Added to bag')),

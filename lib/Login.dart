@@ -140,14 +140,16 @@ try {
     DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
 
     if (userDoc.exists) {
-      String role = userDoc['role']; // Retrieve role
+     final data = userDoc.data() as Map<String, dynamic>?;
+final role = data?['role'] as String?;
 
-      // Navigate based on role
-      if (role == 'admin') {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Team()));
-      }  else {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home())); // Default user page
-      }
+ // Retrieve role
+
+if (user.email == 'admin@dotby.com' || role == 'admin') {
+  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Team()));
+} else {
+  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
+}
 
       print('Logged in as: $role');
     } else {

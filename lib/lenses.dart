@@ -59,8 +59,6 @@ Future<List<Map<String, dynamic>>> fetchLenses() async {
                  alignment: WrapAlignment.center,
                              children: lensesItems.map((lenses){
                  
-                    // Fetch 'poster_url' from the nested document data
-                    String? posterUrl = lenses['poster_url'] ; // Adjust field name to match your database
   String formattedPrice = NumberFormat('#,##0').format(lenses['price'] ?? 0);
                  return  Container(height: 200,
     width: 150,
@@ -84,15 +82,23 @@ Future<List<Map<String, dynamic>>> fetchLenses() async {
        child:Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          posterUrl != null
-                            ? Image.network(
-                                posterUrl,
-                              
-                              )
-                            : Image.asset(
-                                'assets/images/logo.png',  // Use a local placeholder image
-                               
-                              ),
+       
+  ClipRRect(
+  borderRadius: BorderRadius.circular(12), 
+  child: lenses['profileImage'] != null && lenses['profileImage'].toString().isNotEmpty
+      ? Image.network(
+          lenses['profileImage'],
+          width: 80,
+          height: 80,
+          fit: BoxFit.cover,
+        )
+      : Image.asset(
+          'assets/images/logo.png',
+          width: 80,
+          height: 80,
+          fit: BoxFit.cover,
+        ),
+),
            Text(lenses['name']??'',style: GoogleFonts.aDLaMDisplay(fontSize:15,fontWeight:FontWeight.bold, color: Colors.white),
          maxLines:1,
          overflow: TextOverflow.ellipsis,

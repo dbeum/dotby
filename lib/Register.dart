@@ -137,7 +137,7 @@ class _RegisterState extends State<Register> {
                             onPressed: () async {
                               final email = _email.text;
                               final password = _password.text;
-                             final role = 'admin'; 
+                             final role = 'user'; 
                               try {
                                 final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
                                   email: email,
