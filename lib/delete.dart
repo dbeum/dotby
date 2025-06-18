@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotby1/Login.dart';
-import 'package:dotby1/home.dart';
-import 'package:dotby1/orders.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -66,11 +64,11 @@ Future<void> deleteAccount(BuildContext context) async {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(  backgroundColor: Color.fromARGB(255, 31, 33, 37),),
+      appBar: AppBar(  backgroundColor: Colors.white,),
 body:Center(child:  Column(
 children: [
   SizedBox(height: 250,),
-  Text('WOULD YOU LIKE TO PROCEED?',style:GoogleFonts.signika(textStyle: TextStyle(fontSize: 20,color:Colors.white,fontWeight: FontWeight.bold),)),
+  Text('WOULD YOU LIKE TO PROCEED?',style:GoogleFonts.signika(textStyle: TextStyle(fontSize: 20,color:Colors.black,fontWeight: FontWeight.bold),)),
  SizedBox(height: 5,),
  Container(
         height: 35,
@@ -78,7 +76,7 @@ children: [
         decoration: BoxDecoration(
         color: Colors.transparent,
           borderRadius: BorderRadius.all(Radius.circular(15)),
-          border: Border.all(color: Colors.white,width: 1)
+          border: Border.all(color: Colors.black,width: 1)
         ),
         child:TextButton(onPressed:() async {
     await deleteAccount(context);

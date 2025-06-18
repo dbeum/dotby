@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:dotby1/home/home.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,8 +26,8 @@ late double price;
   @override
   void initState() {
     super.initState();
-      basePrice = widget.infoDetails['price'] ?? 0;
-      stock = widget.infoDetails['stock'] ?? 0;
+      basePrice = widget.infoDetails['price'] ?? 0.0;
+      stock = widget.infoDetails['stock'] ?? 0.0;
      price = basePrice; 
   }
 
@@ -57,12 +60,40 @@ late double price;
     throw 'Could not launch $whatsappUrl';
   }
 }
+void showTopSnackBar(BuildContext context, String message) {
+  OverlayEntry overlayEntry = OverlayEntry(
+    builder: (context) => Positioned(
+      top: MediaQuery.of(context).padding.top + 10,
+      left: 10,
+      right: 10,
+      child: Material(
+        elevation: 10,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(16)),
+           color: Colors.black87,),
 
+          child: Text(
+            message,
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  Overlay.of(context)?.insert(overlayEntry);
+
+  Future.delayed(Duration(seconds: 3), () {
+    overlayEntry.remove();
+  });
+}
   
   @override
   Widget build(BuildContext context) {
    
-    String? posterUrl = widget.infoDetails['poster_url'];
+    String? posterUrl = widget.infoDetails['profileImage'] ??'';
 
 bool isAvailable = widget.infoDetails['available'] ?? true;
 
@@ -119,10 +150,27 @@ void addToCart(String productId, String title, double price, String imageUrl, in
 }
 
     return  Scaffold(
-      backgroundColor: Color.fromARGB(255,	19, 20, 22),
-      appBar: AppBar(elevation: 0,backgroundColor: Colors.transparent,),
+    
       body: Column(
         children: [
+            SizedBox(height: 50,),
+  Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+         IconButton(
+          icon: Icon(Icons.arrow_back,color: Colors.black,),
+          onPressed: () {
+     
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => Home()), 
+              (Route <dynamic> route )=> false,
+            );
+          },
+        ),
+      
+      
+       ],),
           SizedBox(height: 90,),
           Center(child:  posterUrl != null
                             ? Image.network(
@@ -264,7 +312,8 @@ Row(
   ),
        child:Image.asset('assets/images/whatsapp.png')
       )),
-      
+
+      if(widget.infoDetails['stock']>0)
           Container(height: 50,
     width: 250,
       decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(18)),
@@ -284,16 +333,15 @@ Row(
         );
       } else {
         addToCart(
-          widget.infoDetails['id'],
-          widget.infoDetails['name'],
-          widget.infoDetails['price'],
-          widget.infoDetails['poster_url'],
-          _orderQuantity,
-          widget.infoDetails['stock']
+          widget.infoDetails['id'] ?? 'default_id',
+  widget.infoDetails['name'] ?? 'default_name',
+  widget.infoDetails['price'] ?? 0.0,
+  widget.infoDetails['profileImage'] ?? '',
+  _orderQuantity,
+  widget.infoDetails['stock'] ?? 0
+
         );
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Added to bag')),
-        );
+        showTopSnackBar(context, "Added to Bag");
       }
     },
 

@@ -1,14 +1,18 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dotby1/home.dart';
+
+import 'package:dotby1/home/home.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Vendorwaitpage extends StatefulWidget {
-  const Vendorwaitpage({super.key});
+class Vendor extends StatefulWidget {
+  const Vendor({super.key});
 
   @override
-  State<Vendorwaitpage> createState() => _VendorwaitpageState();
+  State<Vendor> createState() => _VendorState();
 }
 
 final Uri whatsappUrl = Uri.parse('https://wa.me/+2348173211336');
@@ -20,18 +24,20 @@ final Uri whatsappUrl = Uri.parse('https://wa.me/+2348173211336');
       throw 'Could not launch $whatsappUrl';
     }
   }
-class _VendorwaitpageState extends State<Vendorwaitpage> {
+class _VendorState extends State<Vendor> {
+ 
+
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
    //   appBar: AppBar(),
       body: Center(child: Column(children: [
-        SizedBox(height: 40,),
+        SizedBox(height: 50,),
        Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
          IconButton(
-          icon: Icon(Icons.arrow_back,color: Colors.white,),
+          icon: Icon(Icons.arrow_back,color: Colors.black,),
           onPressed: () {
      
             Navigator.pushAndRemoveUntil(
@@ -41,9 +47,10 @@ class _VendorwaitpageState extends State<Vendorwaitpage> {
             );
           },
         ),
+        SizedBox(width: 100,),
+        Text('Vendor Profile',style: TextStyle(color: Colors.black,fontSize: 15),)
        ],),
-         Text(  "Your vendor registration is currently pending approval.",
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold,color: Colors.white),),
+      
                 StreamBuilder<QuerySnapshot>(
   stream: FirebaseFirestore.instance
       .collection('vendors') // Firestore collection
@@ -61,24 +68,54 @@ class _VendorwaitpageState extends State<Vendorwaitpage> {
       var vendors = snapshot.data!.docs;
 
       return Container(
-        height: 400,
+        height: 700,
         child:  ListView.builder(
         itemCount: vendors.length,
         itemBuilder: (context, index) {
           var vendor = vendors[index];
           return ListTile(
-            title: Text('Business Name: ${vendor['businessName']}' ,style: TextStyle(fontSize: 16,color: Colors.white),),
-            subtitle: Column(children: [Text('Owner Name: ${vendor['ownerName']}', style: TextStyle(fontSize: 16,color: Colors.white),),
-            Text('Email: ${vendor['email']}' ,style: TextStyle(fontSize: 16,color: Colors.white),),
-            Text('Business Type: ${vendor['businessType']}' ,style: TextStyle(fontSize: 16,color: Colors.white),),
+            title: Text('Welcome, ${vendor['businessName']}' ,style: TextStyle(fontSize: 20,color: Colors.black),),
+            subtitle:
+             Column(children: [
+            Container(height: 300,
+            
+            
+            child:  vendor['profileImage'] != null && vendor['profileImage'].toString().isNotEmpty
+  ? Image.network(
+      vendor['profileImage'],
+      width: 350,
+      height: 80,
+      
+      fit: BoxFit.cover,
+    )
+  : Image.asset(
+      'assets/images/logo.png', // Your fallback/placeholder image
+      width: 80,
+      height: 80,
+    ),),
+            Container(
+             
+              decoration: BoxDecoration( color: Colors.white,
+              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15),bottomRight: Radius.circular(15))),
+              child: 
+           Padding(padding: EdgeInsets.all(10),child:   Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+              
+            
+                  Text('Owner: ${vendor['ownerName']}', style: TextStyle(fontSize: 16,color: Colors.black),),
+            Text('Email: ${vendor['email']}' ,style: TextStyle(fontSize: 16,color: Colors.black),),
+            Text('Business Type: ${vendor['businessType']}' ,style: TextStyle(fontSize: 16,color: Colors.black),),
             SizedBox(height: 20,),
-            Text('Approval Status: ${vendor['contacted'] ? 'APPROVED' : 'NOT APPROVED'}' ,style: TextStyle(fontSize: 16,color: Colors.white),),
+            Text('Approval Status: ${vendor['contacted'] ? 'APPROVED' : 'NOT APPROVED'}' ,style: TextStyle(fontSize: 16,color: Colors.black),),
              SizedBox(height: 20),
-
+           if(vendor['approvedDate']!=null)
+ Text('Approved ON: ${DateTime.fromMillisecondsSinceEpoch(vendor['approvedDate'].millisecondsSinceEpoch).toString().split(" ")[0]}',style: TextStyle(color: Colors.black,fontSize: 15)),
+              SizedBox(height: 10),
               // Terms and Conditions
               Text(
-                "Terms & Conditions:",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                "Terms & Conditions for First-Time Payment:",
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
               Text(
@@ -89,11 +126,18 @@ class _VendorwaitpageState extends State<Vendorwaitpage> {
                 "2. The registration fee will be paid upon your first job assignment.",
                 style: TextStyle(fontSize: 16),
               ),
-              Text(
-                "3. Once your registration is approved, you'll be able to start accepting job requests.",
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(height: 20),
+
+                SizedBox(height: 20),
+      
+
+            ],),),),
+          
+                SizedBox(height: 20),
+            Text(
+                    "You will be contacted via your provided contact details for job openings.",
+                    style: TextStyle(fontSize: 15,color:Colors.black),
+                  ),
+             SizedBox(height: 20),
  TextButton(
                 onPressed: _launchwhatsapp,
                 child: Text(
@@ -102,7 +146,8 @@ class _VendorwaitpageState extends State<Vendorwaitpage> {
                 ),
               ),
 
-            ],)
+            ],),
+            
           );
         },
         )

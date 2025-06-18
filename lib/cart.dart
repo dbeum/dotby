@@ -2,10 +2,12 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotby1/confirm.dart';
+import 'package:dotby1/main.dart';
 import 'package:dotby1/orders.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
@@ -71,7 +73,35 @@ late Stream<QuerySnapshot> cartItemsStream;
   }
 }
 
-  
+  void showTopSnackBar(BuildContext context, String message) {
+  OverlayEntry overlayEntry = OverlayEntry(
+    builder: (context) => Positioned(
+      top: MediaQuery.of(context).padding.top + 10,
+      left: 10,
+      right: 10,
+      child: Material(
+        elevation: 10,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(16)),
+           color: Colors.black87,),
+         
+          child: Text(
+            message,
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  Overlay.of(context)?.insert(overlayEntry);
+
+  Future.delayed(Duration(seconds: 3), () {
+    overlayEntry.remove();
+  });
+}
   void removeFromCart(String productId) {
     FirebaseFirestore.instance
         .collection('carts')
@@ -83,34 +113,29 @@ late Stream<QuerySnapshot> cartItemsStream;
 Future<void> checkout() async {
   if (user == null) return;
 
-  // Check if both dates are selected
   if (_startDate == null || _endDate == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Please select both pickup and return dates")),
-    );
+   showTopSnackBar(context, "Please select both pickup and return dates");
     return;
   }
 
-  // Fetch all cart items
-  final cartItems = await FirebaseFirestore.instance
+  final cartRef = FirebaseFirestore.instance
       .collection('carts')
       .doc(user!.uid)
-      .collection('items')
-      .get();
+      .collection('items');
+
+  final cartItems = await cartRef.get();
 
   if (cartItems.docs.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Your cart is empty")),
-    );
+    showTopSnackBar(context, "Your cart is empty");
     return;
   }
 
-  // Format pickup and return dates
   final startDateFormatted = DateTime(_startDate!.year, _startDate!.month, _startDate!.day);
   final endDateFormatted = DateTime(_endDate!.year, _endDate!.month, _endDate!.day);
   final duration = _duration;
 
-  // Process each cart item
+  WriteBatch batch = FirebaseFirestore.instance.batch();
+
   for (var item in cartItems.docs) {
     final ticketNumber = generateTicketNumber();
     final price = item['price'] ?? 0;
@@ -118,7 +143,6 @@ Future<void> checkout() async {
     final title = item['title'] ?? 'Unknown';
     final image = item['image'] ?? '';
 
-    // 1. Place the order
     await FirebaseFirestore.instance.collection('orders').doc(ticketNumber).set({
       'ticketNumber': ticketNumber,
       'userId': user!.uid,
@@ -136,26 +160,23 @@ Future<void> checkout() async {
       }
     });
 
-   final productRef = FirebaseFirestore.instance.collection('products').doc(item.id);
-final productSnap = await productRef.get();
+    final productRef = FirebaseFirestore.instance.collection('products').doc(item.id);
+    final productSnap = await productRef.get();
 
-if (!productSnap.exists) {
-  debugPrint('Product ${item.id} no longer exists, skipping...');
-  continue; // Skip this item in the cart
-}
+    if (productSnap.exists) {
+      final currentStock = productSnap['stock'] ?? 0;
+      await productRef.update({
+        'stock': currentStock - quantity,
+      });
+    }
 
-final currentStock = productSnap['stock'] ?? 0;
-await productRef.update({
-  'stock': currentStock - quantity,
-});
-
-
-
-    // 3. Remove item from cart
-    await item.reference.delete();
+    // Add delete to batch
+    batch.delete(item.reference);
   }
 
-  // 4. Navigate to Orders screen once after all items are processed
+  // Commit all deletes at once
+  await batch.commit();
+_showNotification();
   Navigator.pushReplacement(
     context,
     MaterialPageRoute(builder: (context) => Orders()),
@@ -169,14 +190,40 @@ String generateTicketNumber() {
   int randomDigits = random.nextInt(90000) + 10000; // Generates a 5-digit number between 10000 and 99999
   return 'dotby$randomDigits'; // Concatenates 'dotby' with the 5 random digits
 }
+ void _showNotification() async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'reminders_channel',
+      'Reminders',
+      channelDescription: 'Notifications for daily reminders',
+      importance: Importance.max,
+      priority: Priority.high,
+      icon: '@drawable/ic_stat_dn'
+    );
+
+    const DarwinNotificationDetails iOSPlatformChannelSpecifics =
+        DarwinNotificationDetails();
+
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics,
+    );
+
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      'Order Confirmed!',
+      'Your order has been placed successfully.',
+      platformChannelSpecifics,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final NumberFormat formatter = NumberFormat('#,###');
 
     return Scaffold(
-      appBar: AppBar(backgroundColor:const Color.fromARGB(255, 31, 33, 37),
-      title: Text('Cart',style: GoogleFonts.aDLaMDisplay(fontSize:20,color: Colors.white),),),
+      appBar: AppBar(backgroundColor: Colors.white,
+      title: Text('Cart',style: GoogleFonts.aDLaMDisplay(fontSize:20,color: Colors.black),),),
       body:StreamBuilder(
         stream: getCartItems(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -184,7 +231,7 @@ String generateTicketNumber() {
             return Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text("Your cart is empty", style: GoogleFonts.mulish(color: Colors.white)));
+            return Center(child: Text("Your cart is empty", style: GoogleFonts.mulish(color: Colors.black)));
           }
 
           final cartItems = snapshot.data!.docs;
@@ -206,8 +253,8 @@ String generateTicketNumber() {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('CART SUMMARY', style: GoogleFonts.mulish(fontSize: 15, color: Colors.white)),
-                      Text('Total: ₦${formatter.format(calculatedTotalPrice)}', style: GoogleFonts.mulish(fontSize: 15, color: Colors.white)),
+                      Text('CART SUMMARY', style: GoogleFonts.mulish(fontSize: 15, color: Colors.black)),
+                      Text('Total: ₦${formatter.format(calculatedTotalPrice)}', style: GoogleFonts.mulish(fontSize: 15, color: Colors.black)),
                     ],
                   ),
                 ),
@@ -234,7 +281,7 @@ String generateTicketNumber() {
                       child: Container(
                         padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: Colors.grey[900],
+                          color: Colors.black,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child:Column(children: [
@@ -262,7 +309,7 @@ String generateTicketNumber() {
            
       decoration:const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
         gradient: LinearGradient(
-      colors: [Color.fromARGB(155,29, 31, 35), Color.fromARGB(255,19, 20, 22)], // Gradient colors
+      colors: [Colors.white, Colors.black], // Gradient colors
       begin: Alignment.topLeft, // Start point
       end: Alignment.bottomRight, // End point
     ),
@@ -303,7 +350,7 @@ String generateTicketNumber() {
              Container(height: 35,width: 45,
       decoration:const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
         gradient: LinearGradient(
-      colors: [Color.fromARGB(155,29, 31, 35), Color.fromARGB(255,19, 20, 22)], // Gradient colors
+      colors: [Colors.black, Colors.white], // Gradient colors
       begin: Alignment.topLeft, // Start point
       end: Alignment.bottomRight, // End point
     ),
@@ -428,7 +475,7 @@ child:     TextButton(
 floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
              floatingActionButton: FloatingActionButton(
         child: Icon(Icons.check_outlined,color: Colors.white,),
-        backgroundColor: Color.fromARGB(155,29, 31, 35),
+        backgroundColor: Colors.black,
         foregroundColor: Color.fromARGB(255,19, 20, 22),
         onPressed:()async {
            await checkout();

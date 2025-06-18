@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dotby1/info.dart';
+import 'package:dotby1/info/info.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -13,21 +13,20 @@ class Lenses extends StatefulWidget {
 
 class _LensesState extends State<Lenses> {
 
- // final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  
+
    
 Future<List<Map<String, dynamic>>> fetchLenses() async {
   
     QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('products') // Main products collection
-        .doc('Lenses') // The "events" category
-        .collection('items') // The actual products
+        .collection('products') 
+        .doc('Lenses') 
+        .collection('items') 
         .get();
 
     return snapshot.docs.map((doc) {
       return {
-        'id': doc.id, // Document ID
-        ...doc.data() as Map<String, dynamic>, // Product details
+        'id': doc.id,
+        ...doc.data() as Map<String, dynamic>,
       };
     }).toList();
   
@@ -36,6 +35,7 @@ Future<List<Map<String, dynamic>>> fetchLenses() async {
   
   @override
   Widget build(BuildContext context) {
+   
     return   FutureBuilder<List<Map<String, dynamic>>>(
             future: fetchLenses(),
             builder: (context, snapshot) {
@@ -44,7 +44,7 @@ Future<List<Map<String, dynamic>>> fetchLenses() async {
               } else if (snapshot.hasError) {
                 return Center(child: Text('Error fetching data'));
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return Center(child: Text('No data found'));
+                return Center(child: Text('No data found',style: TextStyle(color: Colors.black)));
               }
 
               List<Map<String, dynamic>> lensesItems = snapshot.data!;
@@ -64,7 +64,7 @@ Future<List<Map<String, dynamic>>> fetchLenses() async {
     width: 150,
       decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)),
         gradient: LinearGradient(
-      colors: [Color.fromARGB(155,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
+      colors: [Color.fromARGB(255,114, 117, 129), Color.fromARGB(255,29, 31, 35)], // Gradient colors
       begin: Alignment.topLeft, // Start point
       end: Alignment.bottomRight, // End point
     ),

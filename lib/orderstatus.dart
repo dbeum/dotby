@@ -79,7 +79,9 @@ class _ReturnState extends State<Return> {
   Widget build(BuildContext context) {
     
     return  Scaffold(
-      appBar: AppBar(title: Text('Order Status'),),
+      appBar: AppBar(title: Text('Order Status'),
+     backgroundColor: Colors.white,
+      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('order_history').snapshots(),
         builder: (context, snapshot) {

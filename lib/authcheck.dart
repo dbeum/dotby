@@ -1,4 +1,5 @@
-import 'package:dotby1/home.dart';
+
+import 'package:dotby1/home/home.dart';
 import 'package:dotby1/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

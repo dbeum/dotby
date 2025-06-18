@@ -51,7 +51,7 @@ Future<List<Map<String, dynamic>>> fetchOrders() async {
      return Scaffold(
       //backgroundColor: Colors.white,
       appBar: AppBar(
-       backgroundColor:const Color.fromARGB(255, 31, 33, 37),
+       backgroundColor:Colors.white,
         elevation: 0,
       ),
       body:  Column(
@@ -59,12 +59,15 @@ Future<List<Map<String, dynamic>>> fetchOrders() async {
         children: [
 Center(child:  Image.asset('assets/images/profile.png',height: 100,),),
  SizedBox(height: 10,),
- Text('ORDERS',style:GoogleFonts.signika(textStyle: TextStyle(fontSize: 20,color:Colors.white,fontWeight: FontWeight.bold),)),
+ Text('ORDERS',style:GoogleFonts.signika(textStyle: TextStyle(fontSize: 20,color:Colors.black,fontWeight: FontWeight.bold),)),
 SizedBox(height: 10,),
+Padding(padding: EdgeInsets.all(10),child: SelectableText('Pickup Address: 32a Craig St, Ogudu, Lagos 105102, Lagos',
+textAlign: TextAlign.center,
+style: GoogleFonts.signika(color: Colors.black),)),
 Padding(padding: EdgeInsets.all(10),child: Text('Heads up! Before coming to pick up your order, kindly confirm with our customer rep on WhatsApp to avoid any delays. We got you!',
 textAlign: TextAlign.justify,
 softWrap: true,
-style: GoogleFonts.signika(color: Colors.white),)),
+style: GoogleFonts.signika(color: Colors.black),)),
  SizedBox(height: 20,),
 Expanded(child: 
 FutureBuilder<List<Map<String, dynamic>>>(
@@ -111,7 +114,7 @@ FutureBuilder<List<Map<String, dynamic>>>(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                         gradient: LinearGradient(
                           colors: [
-                            Color.fromARGB(155, 114, 117, 129),
+                            Color.fromARGB(255, 114, 117, 129),
                             Color.fromARGB(255, 29, 31, 35)
                           ],
                           begin: Alignment.topLeft,
@@ -119,7 +122,7 @@ FutureBuilder<List<Map<String, dynamic>>>(
                         ),
                       ),
                       child: ElevatedButton(
-                        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>Confrimorder(orderDetails:order))),
+                        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>Confirmorder(orderDetails:order))),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.transparent,
                           foregroundColor: Colors.transparent,
@@ -159,7 +162,7 @@ FutureBuilder<List<Map<String, dynamic>>>(
                             ),
                             Text(
                               "₦$formattedPrice",
-                              style: GoogleFonts.aDLaMDisplay(fontSize: 20, color: Colors.white),
+                              style: GoogleFonts.montserrat(fontSize: 20, color: Colors.white),
                             ),
                           ],
                         ),

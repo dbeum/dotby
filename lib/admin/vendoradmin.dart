@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dotby1/vendorrequest.dart';
+import 'package:dotby1/admin/vendorrequest.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -1247,7 +1247,9 @@ StreamBuilder<QuerySnapshot>(
             subtitle:Container(
              decoration: BoxDecoration(border: Border.all(width: 2,color: Colors.white),
              borderRadius: BorderRadius.all(Radius.circular(10))),
-              child: Row(children: [
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
   vendor['profileImage'] != null && vendor['profileImage'].toString().isNotEmpty
   ? Image.network(
       vendor['profileImage'],
@@ -1279,7 +1281,79 @@ StreamBuilder<QuerySnapshot>(
     }
   },
 ),
-SizedBox(height: 20,),
+
+
+Text('Others',style: TextStyle(color: Colors.white,fontSize: 20)),
+
+StreamBuilder<QuerySnapshot>(
+  stream: FirebaseFirestore.instance
+      .collection('vendors') // Firestore collection
+      .snapshots(),  // This gives you a stream of data
+  builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return Center(child: CircularProgressIndicator()); // Show loading spinner
+    } else if (snapshot.hasError) {
+      return Center(child: Text('Error: ${snapshot.error}')); // Show error message
+    } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+      return Center(child: Text('No vendors found.'));
+    } else {
+     var vendors = snapshot.data!.docs
+      .where((doc) => doc['businessType'] == 'Other' && doc['contacted'] == true)
+      .toList();
+
+  if (vendors.isEmpty) {
+    return Center(
+      child: Text('No Approved vendors found.', style: TextStyle(color: Colors.white)),
+    );
+  }
+      return Container(height: 200,
+      child:  ListView.builder(
+        itemCount: vendors.length,
+        itemBuilder: (context, index) {
+          
+          var vendor = vendors[index];
+         
+          return ListTile(
+            
+            title: Text(' ${vendor['other']}',style: TextStyle(color: Colors.white,fontSize: 17),),
+            subtitle:Container(
+             decoration: BoxDecoration(border: Border.all(width: 2,color: Colors.white),
+             borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+  vendor['profileImage'] != null && vendor['profileImage'].toString().isNotEmpty
+  ? Image.network(
+      vendor['profileImage'],
+      width: 80,
+      height: 80,
+      
+      fit: BoxFit.cover,
+    )
+  : Image.asset(
+      'assets/images/logo.png', // Your fallback/placeholder image
+      width: 80,
+      height: 80,
+    ),
+                 Column(children: [
+              Text('Owner Name: ${vendor['ownerName']}',style: TextStyle(color: Colors.white,fontSize: 15)),
+              SelectableText('Email: ${vendor['email']}',style: TextStyle(color: Colors.white,fontSize: 15)),
+              SelectableText('Phone Number: ${vendor['number']}',style: TextStyle(color: Colors.white,fontSize: 15)),
+              SelectableText('Location: ${vendor['location']}',style: TextStyle(color: Colors.white,fontSize: 15)),
+               Text('Approved ON:${DateTime.fromMillisecondsSinceEpoch(vendor['approvedDate'].millisecondsSinceEpoch).toString().split(" ")[0]}',style: TextStyle(color: Colors.white,fontSize: 15)),
+          
+            ],)
+              ],)
+            
+            ,)
+          );
+          }
+         
+      ),);
+    }
+  },
+),
+SizedBox(height: 20,)
       ],),)
     );
   }

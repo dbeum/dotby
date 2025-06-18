@@ -2,16 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-class Confrimorder extends StatefulWidget {
+class Confirmorder extends StatefulWidget {
 
    final Map<String, dynamic> orderDetails;
-  const Confrimorder({super.key,required this.orderDetails});
+  const Confirmorder({super.key,required this.orderDetails});
 
   @override
-  State<Confrimorder> createState() => _ConfrimorderState();
+  State<Confirmorder> createState() => _ConfirmorderState();
 }
 
-class _ConfrimorderState extends State<Confrimorder> {
+class _ConfirmorderState extends State<Confirmorder> {
    final DateFormat dateFormat = DateFormat('yyyy-MM-dd');
 
   @override
@@ -93,49 +93,3 @@ final pickupDate = item['pickupDate'] != null
 
 
 
-
-// Padding(
-//             padding: const EdgeInsets.all(16.0),
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 Text('Ticket Number: $ticketNumber', style: TextStyle(fontSize: 18)),
-//                 SizedBox(height: 20),
-//                 Text('Total Price: ₦${totalPrice.toStringAsFixed(2)}', style: TextStyle(fontSize: 18)),
-//                 SizedBox(height: 20),
-//                 Text('Order Details:', style: TextStyle(fontSize: 18)),
-//                 SizedBox(height: 10),
-//                 ListView.builder(
-//                   shrinkWrap: true,
-//                   physics: NeverScrollableScrollPhysics(),
-//                   itemCount: items.length,
-//                   itemBuilder: (context, index) {
-//                     final item = items[index];
-//                     final pickupDate = item['pickupDate'] != null
-//                         ? dateFormat.format((item['pickupDate'] as Timestamp).toDate())
-//                         : 'N/A';
-
-//                     final returnDate = item['returnDate'] != null
-//                         ? dateFormat.format((item['returnDate'] as Timestamp).toDate())
-//                         : 'N/A';
-                    
-//                     return Padding(
-//                       padding: const EdgeInsets.symmetric(vertical: 8.0),
-//                       child: Row(
-//                         children: [
-//                           Image.network(item['image'], width: 50, height: 50),
-//                           SizedBox(width: 10),
-//                           Column(
-//                             crossAxisAlignment: CrossAxisAlignment.start,
-//                             children: [
-//                               Text(item['title'].length > 20 ? item['title'].substring(0, 20) + '...' : item['title'], style: TextStyle(fontSize: 16)),
-//                               Text('₦${(item['price'] * item['quantity']).toStringAsFixed(2)}', style: TextStyle(fontSize: 14)),
-//                               Text('Quantity: ${item['quantity']}', style: TextStyle(fontSize: 14)),
-//                               Text('Duration: ${item['duration']} days', style: TextStyle(fontSize: 14)),
-//                               Text('Pickup Date: $pickupDate', style: TextStyle(fontSize: 14)),
-//                               Text('Return Date: $returnDate', style: TextStyle(fontSize: 14)),
-//                             ],
-//                           ),
-//                         ],
-//                       ),
-//                     );

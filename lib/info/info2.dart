@@ -1,3 +1,6 @@
+
+
+import 'package:dotby1/home/home2.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -56,7 +59,7 @@ late double price;
   @override
   Widget build(BuildContext context) {
    //    String? name = widget.infoDetails['title'];
-    String? posterUrl = widget.infoDetails['poster_url'];
+    String? profileImage = widget.infoDetails['profileImage'];
   //  int? price = widget.infoDetails['price'];
 
 final formattedPrice = '₦${NumberFormat('#,###').format(price.toInt())}';
@@ -64,14 +67,32 @@ final formattedPrice = '₦${NumberFormat('#,###').format(price.toInt())}';
 
 
     return  Scaffold(
-      backgroundColor: Color.fromARGB(255,	19, 20, 22),
-      appBar: AppBar(elevation: 0,backgroundColor: Colors.transparent,),
+     backgroundColor: Color.fromARGB(255,	19, 20, 22),
+    //  appBar: AppBar(elevation: 0,backgroundColor: Colors.transparent,),
       body: Column(
         children: [
+                SizedBox(height: 50,),
+  Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+         IconButton(
+          icon: Icon(Icons.arrow_back,color: Colors.black,),
+          onPressed: () {
+     
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => Home2()), 
+              (Route <dynamic> route )=> false,
+            );
+          },
+        ),
+      
+      
+       ],),
           SizedBox(height: 90,),
-          Center(child:  posterUrl != null
+          Center(child:  profileImage != null
                             ? Image.network(
-                                posterUrl,
+                                profileImage,
                               height: 200,
                               )
                             : Image.asset(

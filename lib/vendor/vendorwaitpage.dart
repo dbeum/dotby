@@ -1,16 +1,15 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dotby1/home.dart';
+import 'package:dotby1/home/home.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Vendor extends StatefulWidget {
-  const Vendor({super.key});
+class Vendorwaitpage extends StatefulWidget {
+  const Vendorwaitpage({super.key});
 
   @override
-  State<Vendor> createState() => _VendorState();
+  State<Vendorwaitpage> createState() => _VendorwaitpageState();
 }
 
 final Uri whatsappUrl = Uri.parse('https://wa.me/+2348173211336');
@@ -22,20 +21,18 @@ final Uri whatsappUrl = Uri.parse('https://wa.me/+2348173211336');
       throw 'Could not launch $whatsappUrl';
     }
   }
-class _VendorState extends State<Vendor> {
- 
-
+class _VendorwaitpageState extends State<Vendorwaitpage> {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
    //   appBar: AppBar(),
       body: Center(child: Column(children: [
-        SizedBox(height: 50,),
+        SizedBox(height: 40,),
        Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
          IconButton(
-          icon: Icon(Icons.arrow_back,color: Colors.white,),
+          icon: Icon(Icons.arrow_back,color: Colors.black,),
           onPressed: () {
      
             Navigator.pushAndRemoveUntil(
@@ -45,10 +42,9 @@ class _VendorState extends State<Vendor> {
             );
           },
         ),
-        SizedBox(width: 100,),
-        Text('Vendor Profile',style: TextStyle(color: Colors.white,fontSize: 15),)
        ],),
-      
+         Text(  "Your vendor registration is currently pending approval.",
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold,color: Colors.black),),
                 StreamBuilder<QuerySnapshot>(
   stream: FirebaseFirestore.instance
       .collection('vendors') // Firestore collection
@@ -66,39 +62,37 @@ class _VendorState extends State<Vendor> {
       var vendors = snapshot.data!.docs;
 
       return Container(
-        height: 700,
+        height: 250,
         child:  ListView.builder(
         itemCount: vendors.length,
         itemBuilder: (context, index) {
           var vendor = vendors[index];
           return ListTile(
-            title: Text('Welcome, ${vendor['businessName']}' ,style: TextStyle(fontSize: 20,color: Colors.white),),
-            subtitle:
-             Column(children: [
-            
-            Container(
-             
-              decoration: BoxDecoration( color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(15))),
-              child: 
-           Padding(padding: EdgeInsets.all(10),child:   Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-              
-            
-                  Text('Owner: ${vendor['ownerName']}', style: TextStyle(fontSize: 16,color: Colors.black),),
+            title: Text('Business Name: ${vendor['businessName']}' ,style: TextStyle(fontSize: 16,color: Colors.black),),
+            subtitle: Column(children: [Text('Owner Name: ${vendor['ownerName']}', style: TextStyle(fontSize: 16,color: Colors.black),),
             Text('Email: ${vendor['email']}' ,style: TextStyle(fontSize: 16,color: Colors.black),),
             Text('Business Type: ${vendor['businessType']}' ,style: TextStyle(fontSize: 16,color: Colors.black),),
+            if(vendor['businessType']=='Other')
+             Text('${vendor['other']}' ,style: TextStyle(fontSize: 16,color: Colors.black),),
             SizedBox(height: 20,),
             Text('Approval Status: ${vendor['contacted'] ? 'APPROVED' : 'NOT APPROVED'}' ,style: TextStyle(fontSize: 16,color: Colors.black),),
              SizedBox(height: 20),
-           if(vendor['approvedDate']!=null)
- Text('Approved ON: ${DateTime.fromMillisecondsSinceEpoch(vendor['approvedDate'].millisecondsSinceEpoch).toString().split(" ")[0]}',style: TextStyle(color: Colors.black,fontSize: 15)),
-              SizedBox(height: 10),
-              // Terms and Conditions
-              Text(
-                "Terms & Conditions for First-Time Payment:",
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+
+             
+            
+       
+            ],)
+          );
+        },
+        )
+      );
+    }
+  },
+),
+ Padding(padding: EdgeInsets.all(20),
+ child: Column(children: [ Text(
+                "Terms & Conditions:",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
               Text(
@@ -109,18 +103,11 @@ class _VendorState extends State<Vendor> {
                 "2. The registration fee will be paid upon your first job assignment.",
                 style: TextStyle(fontSize: 16),
               ),
-
-                SizedBox(height: 20),
-      
-
-            ],),),),
-          
-                SizedBox(height: 20),
-            Text(
-                    "You will be contacted via your provided contact details for job openings.",
-                    style: TextStyle(fontSize: 15,color:Colors.white),
-                  ),
-             SizedBox(height: 20),
+              Text(
+                "3. Once your registration is approved, you'll be able to start accepting job requests.",
+                style: TextStyle(fontSize: 16),
+              ),],)),
+       SizedBox(height: 20),
  TextButton(
                 onPressed: _launchwhatsapp,
                 child: Text(
@@ -128,17 +115,6 @@ class _VendorState extends State<Vendor> {
                   style: TextStyle(color: Colors.red),
                 ),
               ),
-
-            ],),
-            
-          );
-        },
-        )
-      );
-    }
-  },
-)
-
       ],)),
                 
     );

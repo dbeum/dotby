@@ -55,7 +55,9 @@ class _HistoryState extends State<History> {
   Widget build(BuildContext context) {
      final NumberFormat formatter = NumberFormat('#,###');
     return Scaffold(
-      appBar: AppBar(title: Text('Order History'),),
+      appBar: AppBar(title: Text('Order History',),
+      backgroundColor: Colors.white,
+      ),
       body:FutureBuilder<List<Map<String, dynamic>>>(
         future: fetchOrderHistory(),
         builder: (context, snapshot) {
@@ -64,7 +66,7 @@ class _HistoryState extends State<History> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error loading order history.'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No tickets found.'));
+            return Center(child: Text('No tickets found.',style: TextStyle(color:Colors.black)));
           }
  final orderHistory = snapshot.data!;
 

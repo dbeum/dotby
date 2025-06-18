@@ -116,6 +116,8 @@ StreamBuilder<QuerySnapshot>(
                 Text('Email: ${vendors['email']}'),
                   Text('Phone: ${vendors['number']}'),
                 Text('Business Type: ${vendors['businessType']}'),
+                if(vendors['businessType']=='Other')
+             Text('${vendors['other']}' ,style: TextStyle(fontSize: 16,color: Colors.black),),
                 SizedBox(height: 5,),
                 SelectableText('Description: ${vendors['description']}'),
                   SizedBox(height: 5,),
